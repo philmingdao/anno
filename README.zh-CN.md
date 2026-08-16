@@ -37,6 +37,18 @@ Codex、Claude Code、WorkBuddy 和 CodeBuddy 使用打包的插件清单。Curs
 
 可直接复制的配置和各宿主限制，请参阅 [Agent 工具集成说明](docs/agent-tools.md)。
 
+| Agent 工具 | 集成方式 | 状态 |
+| --- | --- | --- |
+| Codex | 原生插件 + MCP | 支持 |
+| Claude Code | 原生插件 + MCP | 支持 |
+| WorkBuddy / CodeBuddy | 原生插件 + MCP | 支持 |
+| Cursor | 本地 stdio MCP | 支持 |
+| Google Antigravity | 本地 stdio MCP | 支持 |
+| Windsurf | 本地 stdio MCP | 支持 |
+| GitHub Copilot CLI / Chat | 本地 stdio MCP | 支持本地运行 |
+| DeepSeek Harness | Cordis-to-MCP 桥接 | 实验性 |
+| Meta Muse Code | 本地 stdio MCP | 实验性 |
+
 ## 在 Codex 中安装
 
 ```bash
@@ -44,7 +56,7 @@ codex plugin marketplace add philmingdao/anno --ref main
 codex plugin add anno@anno
 ```
 
-如需可复现的安装，请将 `main` 替换为发布标签，例如 `v0.3.0`。
+如需可复现的安装，请将 `main` 替换为发布标签，例如 `v0.3.1`。
 
 ## 在 Claude Code 中安装
 
@@ -56,6 +68,36 @@ codex plugin add anno@anno
 ## 在 WorkBuddy 或 CodeBuddy 中安装
 
 将 `philmingdao/anno` 添加为插件 marketplace，然后安装 `anno`。本地开发时，可以通过宿主的插件目录参数加载 `plugins/anno`。
+
+## 在 Cursor、Antigravity、Windsurf、Copilot 或 Muse Code 中安装
+
+这些工具使用同一个本地 MCP 服务。在 npm 包正式发布前，只需准备一次本地服务：
+
+```bash
+git clone https://github.com/philmingdao/anno.git
+cd anno
+npm install
+npm run build
+```
+
+在所选模板中，将 `/absolute/path/to/anno` 替换为仓库克隆后的绝对路径，再复制或合并到下列位置：
+
+| Agent 工具 | 配置模板 | 配置位置 |
+| --- | --- | --- |
+| Cursor | [`cursor/mcp.json`](plugins/anno/integrations/cursor/mcp.json) | 项目 `.cursor/mcp.json` 或 `~/.cursor/mcp.json` |
+| Google Antigravity | [`antigravity/mcp_config.json`](plugins/anno/integrations/antigravity/mcp_config.json) | 项目 `.agents/mcp_config.json` 或 `~/.gemini/config/mcp_config.json` |
+| Windsurf | [`windsurf/mcp_config.json`](plugins/anno/integrations/windsurf/mcp_config.json) | 合并到 `~/.codeium/windsurf/mcp_config.json` |
+| GitHub Copilot CLI | [`github-copilot/mcp-config.json`](plugins/anno/integrations/github-copilot/mcp-config.json) | 合并到 `~/.copilot/mcp-config.json` |
+| VS Code 中的 GitHub Copilot Chat | [`github-copilot/vscode-mcp.json`](plugins/anno/integrations/github-copilot/vscode-mcp.json) | 项目 `.vscode/mcp.json` |
+| Meta Muse Code | [`muse-code/mcp.json`](plugins/anno/integrations/muse-code/mcp.json) | 通过当前版本的 MCP 管理器导入；实验性 |
+
+Copilot CLI 也可以直接执行：
+
+```bash
+copilot mcp add anno --env ANNO_HOST=copilot -- node /absolute/path/to/anno/plugins/anno/dist/index.js
+```
+
+保存后请重启宿主或刷新 MCP 服务列表。GitHub 云端 Coding Agent 无法向用户浏览器暴露 Anno 的回环审阅地址，因此请在本地使用 Copilot。Muse Code 的公开 MCP 配置规范尚未稳定，目前仍标记为实验性支持。
 
 ## 直接使用 MCP 服务
 

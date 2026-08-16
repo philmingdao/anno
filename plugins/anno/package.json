@@ -1,6 +1,6 @@
 {
   "name": "@philmingdao/anno",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "A local-first HTML review editor and MCP server for AI coding agents.",
   "license": "MIT",
   "author": "philmingdao",

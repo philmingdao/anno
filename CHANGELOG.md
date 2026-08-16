@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.1 - 2026-08-16
+
+- Added an explicit support matrix to every translated README.
+- Added in-README installation steps and configuration destinations for Cursor, Google Antigravity, Windsurf, GitHub Copilot CLI/Chat, and Meta Muse Code.
+- Added validation that prevents translated READMEs from omitting any supported host template.
+
 ## 0.3.0 - 2026-08-16
 
 - Added full README translations for Japanese, Korean, French, Spanish, German, Italian, Portuguese, and Thai, with a ten-language switcher.

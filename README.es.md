@@ -37,6 +37,18 @@ Codex, Claude Code, WorkBuddy y CodeBuddy usan manifiestos de complementos empaq
 
 Consulta la [guía de integración con herramientas de agentes](docs/agent-tools.md) para obtener configuraciones listas para copiar y conocer las limitaciones de cada plataforma.
 
+| Herramienta de agente | Integración | Estado |
+| --- | --- | --- |
+| Codex | Complemento nativo + MCP | Compatible |
+| Claude Code | Complemento nativo + MCP | Compatible |
+| WorkBuddy / CodeBuddy | Complemento nativo + MCP | Compatible |
+| Cursor | MCP stdio local | Compatible |
+| Google Antigravity | MCP stdio local | Compatible |
+| Windsurf | MCP stdio local | Compatible |
+| GitHub Copilot CLI / Chat | MCP stdio local | Compatible en local |
+| DeepSeek Harness | Puente Cordis-to-MCP | Experimental |
+| Meta Muse Code | MCP stdio local | Experimental |
+
 ## Instalación en Codex
 
 ```bash
@@ -44,7 +56,7 @@ codex plugin marketplace add philmingdao/anno --ref main
 codex plugin add anno@anno
 ```
 
-Para una instalación reproducible, sustituye `main` por una etiqueta de versión como `v0.3.0`.
+Para una instalación reproducible, sustituye `main` por una etiqueta de versión como `v0.3.1`.
 
 ## Instalación en Claude Code
 
@@ -56,6 +68,36 @@ Para una instalación reproducible, sustituye `main` por una etiqueta de versió
 ## Instalación en WorkBuddy o CodeBuddy
 
 Añade `philmingdao/anno` como marketplace de complementos e instala `anno`. Durante el desarrollo local, carga `plugins/anno` con la opción de directorio de complementos de la plataforma.
+
+## Instalación en Cursor, Antigravity, Windsurf, Copilot o Muse Code
+
+Estas herramientas utilizan el mismo servidor MCP local. Hasta que se publique el paquete npm, prepáralo una sola vez:
+
+```bash
+git clone https://github.com/philmingdao/anno.git
+cd anno
+npm install
+npm run build
+```
+
+En la plantilla elegida, sustituye `/absolute/path/to/anno` por la ruta absoluta del repositorio clonado y copia o combina el archivo en el destino indicado:
+
+| Herramienta de agente | Plantilla | Destino de configuración |
+| --- | --- | --- |
+| Cursor | [`cursor/mcp.json`](plugins/anno/integrations/cursor/mcp.json) | `.cursor/mcp.json` del proyecto o `~/.cursor/mcp.json` |
+| Google Antigravity | [`antigravity/mcp_config.json`](plugins/anno/integrations/antigravity/mcp_config.json) | `.agents/mcp_config.json` del proyecto o `~/.gemini/config/mcp_config.json` |
+| Windsurf | [`windsurf/mcp_config.json`](plugins/anno/integrations/windsurf/mcp_config.json) | Combinar en `~/.codeium/windsurf/mcp_config.json` |
+| GitHub Copilot CLI | [`github-copilot/mcp-config.json`](plugins/anno/integrations/github-copilot/mcp-config.json) | Combinar en `~/.copilot/mcp-config.json` |
+| GitHub Copilot Chat en VS Code | [`github-copilot/vscode-mcp.json`](plugins/anno/integrations/github-copilot/vscode-mcp.json) | `.vscode/mcp.json` del proyecto |
+| Meta Muse Code | [`muse-code/mcp.json`](plugins/anno/integrations/muse-code/mcp.json) | Importar con el gestor MCP de la versión instalada; experimental |
+
+Copilot CLI también puede configurarse directamente:
+
+```bash
+copilot mcp add anno --env ANNO_HOST=copilot -- node /absolute/path/to/anno/plugins/anno/dist/index.js
+```
+
+Después de guardar, reinicia la herramienta o actualiza su lista de servidores MCP. El Coding Agent en la nube de GitHub no puede exponer la URL de bucle local de Anno; usa Copilot localmente. Muse Code sigue siendo experimental porque su contrato público de configuración MCP aún no es estable.
 
 ## Uso directo del servidor MCP
 
