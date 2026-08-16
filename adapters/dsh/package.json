@@ -1,6 +1,6 @@
 {
   "name": "@philmingdao/anno-dsh",
-  "version": "0.3.0-experimental.1",
+  "version": "0.3.1-experimental.1",
   "description": "Experimental native DeepSeek Harness bridge for the Anno MCP server.",
   "license": "MIT",
   "author": "philmingdao",
@@ -18,7 +18,7 @@
   "dsh": {"bundle": {"patch": "./cordis.patch.yml"}},
   "dependencies": {
     "@modelcontextprotocol/client": "^2.0.0",
-    "@philmingdao/anno": "0.3.0"
+    "@philmingdao/anno": "0.3.1"
   },
   "peerDependencies": {
     "@deepseek-ai/cordis": "*",

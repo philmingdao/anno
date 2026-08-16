@@ -37,6 +37,18 @@ Codex、Claude Code、WorkBuddy、CodeBuddy はパッケージ済みプラグイ
 
 設定例とホストごとの制限については、[エージェントツール統合ガイド](docs/agent-tools.md)を参照してください。
 
+| エージェントツール | 統合方式 | 状態 |
+| --- | --- | --- |
+| Codex | ネイティブプラグイン + MCP | 対応 |
+| Claude Code | ネイティブプラグイン + MCP | 対応 |
+| WorkBuddy / CodeBuddy | ネイティブプラグイン + MCP | 対応 |
+| Cursor | ローカル stdio MCP | 対応 |
+| Google Antigravity | ローカル stdio MCP | 対応 |
+| Windsurf | ローカル stdio MCP | 対応 |
+| GitHub Copilot CLI / Chat | ローカル stdio MCP | ローカル実行に対応 |
+| DeepSeek Harness | Cordis-to-MCP ブリッジ | 実験的 |
+| Meta Muse Code | ローカル stdio MCP | 実験的 |
+
 ## Codex へのインストール
 
 ```bash
@@ -44,7 +56,7 @@ codex plugin marketplace add philmingdao/anno --ref main
 codex plugin add anno@anno
 ```
 
-再現可能なインストールには、`main` を `v0.3.0` などのリリースタグに置き換えてください。
+再現可能なインストールには、`main` を `v0.3.1` などのリリースタグに置き換えてください。
 
 ## Claude Code へのインストール
 
@@ -56,6 +68,36 @@ codex plugin add anno@anno
 ## WorkBuddy または CodeBuddy へのインストール
 
 `philmingdao/anno` をプラグイン marketplace として追加し、`anno` をインストールします。ローカル開発では、ホストのプラグインディレクトリオプションで `plugins/anno` を読み込めます。
+
+## Cursor、Antigravity、Windsurf、Copilot、Muse Code へのインストール
+
+これらのツールは同じローカル MCP サーバーを使用します。npm パッケージが公開されるまでは、最初に一度だけローカルサーバーを準備します。
+
+```bash
+git clone https://github.com/philmingdao/anno.git
+cd anno
+npm install
+npm run build
+```
+
+選択したテンプレート内の `/absolute/path/to/anno` を、クローンしたリポジトリの絶対パスに置き換え、次の場所へコピーまたはマージします。
+
+| エージェントツール | テンプレート | 設定先 |
+| --- | --- | --- |
+| Cursor | [`cursor/mcp.json`](plugins/anno/integrations/cursor/mcp.json) | プロジェクトの `.cursor/mcp.json` または `~/.cursor/mcp.json` |
+| Google Antigravity | [`antigravity/mcp_config.json`](plugins/anno/integrations/antigravity/mcp_config.json) | プロジェクトの `.agents/mcp_config.json` または `~/.gemini/config/mcp_config.json` |
+| Windsurf | [`windsurf/mcp_config.json`](plugins/anno/integrations/windsurf/mcp_config.json) | `~/.codeium/windsurf/mcp_config.json` にマージ |
+| GitHub Copilot CLI | [`github-copilot/mcp-config.json`](plugins/anno/integrations/github-copilot/mcp-config.json) | `~/.copilot/mcp-config.json` にマージ |
+| VS Code の GitHub Copilot Chat | [`github-copilot/vscode-mcp.json`](plugins/anno/integrations/github-copilot/vscode-mcp.json) | プロジェクトの `.vscode/mcp.json` |
+| Meta Muse Code | [`muse-code/mcp.json`](plugins/anno/integrations/muse-code/mcp.json) | 現在のビルドの MCP マネージャーから読み込み（実験的） |
+
+Copilot CLI は次のコマンドでも直接設定できます。
+
+```bash
+copilot mcp add anno --env ANNO_HOST=copilot -- node /absolute/path/to/anno/plugins/anno/dist/index.js
+```
+
+保存後、ホストを再起動するか MCP サーバー一覧を更新してください。GitHub のクラウド Coding Agent は Anno のループバック URL をユーザーのブラウザーへ公開できないため、Copilot はローカルで使用してください。Muse Code は公開 MCP 仕様が安定していないため、引き続き実験的サポートです。
 
 ## MCP サーバーを直接使用する
 

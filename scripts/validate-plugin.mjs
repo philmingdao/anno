@@ -71,12 +71,25 @@ const readmePaths = [
   "README.pt.md",
   "README.th.md",
 ];
+const readmeIntegrationTargets = [
+  "plugins/anno/integrations/cursor/mcp.json",
+  "plugins/anno/integrations/antigravity/mcp_config.json",
+  "plugins/anno/integrations/windsurf/mcp_config.json",
+  "plugins/anno/integrations/github-copilot/mcp-config.json",
+  "plugins/anno/integrations/github-copilot/vscode-mcp.json",
+  "plugins/anno/integrations/muse-code/mcp.json",
+];
 await Promise.all(readmePaths.map((path) => access(join(root, path))));
 for (const readmePath of readmePaths) {
   const contents = await readFile(join(root, readmePath), "utf8");
   for (const target of readmePaths) {
     if (target !== readmePath && !contents.includes(`href="${target}"`)) {
       throw new Error(`${readmePath} does not link to ${target}.`);
+    }
+  }
+  for (const target of readmeIntegrationTargets) {
+    if (!contents.includes(`](${target})`)) {
+      throw new Error(`${readmePath} does not document ${target}.`);
     }
   }
 }
