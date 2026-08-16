@@ -163,7 +163,8 @@ test('falls back to the captured Codex task when no widget sends the handoff', a
   env.HTML_REVIEW_STUDIO_HOME = path.join(root, 'state');
   env.CODEX_THREAD_ID = '11111111-1111-4111-8111-111111111111';
   env.ANNO_HANDOFF_FALLBACK_MS = '100';
-  env.ANNO_CODEX_EXECUTABLE = fakeCodex;
+  env.ANNO_CODEX_EXECUTABLE = process.execPath;
+  env.ANNO_CODEX_EXECUTABLE_ARGS = JSON.stringify([fakeCodex]);
   env.ANNO_FAKE_LOG = log;
   delete env.ANNO_DISABLE_CODEX_FALLBACK;
   const transport = new StdioClientTransport({ command: process.execPath, args: [path.resolve('dist/index.js')], cwd: process.cwd(), env, stderr: 'pipe' });
@@ -219,7 +220,13 @@ test('recovers an undelivered handoff after the MCP server restarts', async () =
     await fetch(`${base}/api/session/${sessionId}/generate`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Review-Token': token }, body: JSON.stringify({ html: '<!doctype html><html><body><p>Restart</p></body></html>', review: { edits: {}, formatChanges: {}, annotations: [], pageNotes: { '1': 'Recover me' }, activePage: 1 } }) });
   } finally { await firstClient.close(); }
 
-  const recoveryEnv = { ...baseEnv, ANNO_HANDOFF_FALLBACK_MS: '100', ANNO_CODEX_EXECUTABLE: fakeCodex, ANNO_FAKE_LOG: log };
+  const recoveryEnv = {
+    ...baseEnv,
+    ANNO_HANDOFF_FALLBACK_MS: '100',
+    ANNO_CODEX_EXECUTABLE: process.execPath,
+    ANNO_CODEX_EXECUTABLE_ARGS: JSON.stringify([fakeCodex]),
+    ANNO_FAKE_LOG: log
+  };
   delete recoveryEnv.ANNO_DISABLE_CODEX_FALLBACK;
   const recoveryTransport = new StdioClientTransport({ command: process.execPath, args: [path.resolve('dist/index.js')], cwd: process.cwd(), env: recoveryEnv, stderr: 'pipe' });
   const recoveryClient = new Client({ name: 'anno-after-restart', version: '1.0.0' });

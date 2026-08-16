@@ -11,7 +11,7 @@ import { homedir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 const SERVER_NAME = 'anno-mcp-server';
-const SERVER_VERSION = '0.2.0';
+const SERVER_VERSION = '0.2.1';
 const MAX_HTML_BYTES = 100 * 1024 * 1024;
 const MAX_JSON_BYTES = 2 * 1024 * 1024;
 const PLUGIN_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -376,7 +376,9 @@ function scheduleDispatch(sessionId, handoffId, delayMs) {
         clearTimeout(previous);
     const timer = setTimeout(() => {
         dispatchTimers.delete(key);
-        void dispatchViaCodexCli(sessionId, handoffId);
+        void dispatchViaCodexCli(sessionId, handoffId).catch(error => {
+            console.error(`Anno Codex handoff failed: ${error instanceof Error ? error.message : String(error)}`);
+        });
     }, delayMs);
     timer.unref();
     dispatchTimers.set(key, timer);
@@ -430,7 +432,13 @@ async function dispatchViaCodexCli(sessionId, handoffId) {
         fresh.handoff.nextAttemptAt = undefined;
         await saveSession(fresh);
         const executable = process.env.ANNO_CODEX_EXECUTABLE || 'codex';
-        const child = spawn(executable, ['exec', 'resume', '--skip-git-repo-check', fresh.codexThreadId, codexHandoffPrompt(sessionId, handoffId)], {
+        const configuredArgs = process.env.ANNO_CODEX_EXECUTABLE_ARGS
+            ? JSON.parse(process.env.ANNO_CODEX_EXECUTABLE_ARGS)
+            : [];
+        if (!Array.isArray(configuredArgs) || !configuredArgs.every(argument => typeof argument === 'string')) {
+            throw new Error('ANNO_CODEX_EXECUTABLE_ARGS must be a JSON array of strings.');
+        }
+        const child = spawn(executable, [...configuredArgs, 'exec', 'resume', '--skip-git-repo-check', fresh.codexThreadId, codexHandoffPrompt(sessionId, handoffId)], {
             cwd: path.dirname(fresh.sourcePath),
             env: { ...process.env, ANNO_HANDOFF_DISPATCH_CHILD: '1' },
             stdio: 'ignore'

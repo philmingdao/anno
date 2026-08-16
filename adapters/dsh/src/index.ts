@@ -30,7 +30,7 @@ export function apply(ctx: Context): void {
       env: { ...process.env, ANNO_HOST: 'dsh' },
       stderr: 'pipe'
     });
-    client = new Client({ name: 'anno-dsh', version: '0.2.0-experimental.1' });
+    client = new Client({ name: 'anno-dsh', version: '0.2.1-experimental.1' });
     await client.connect(transport);
     if (disposed) {
       await client.close();

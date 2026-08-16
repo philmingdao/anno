@@ -8,7 +8,7 @@
       "name": "anno",
       "source": "./plugins/anno",
       "description": "Edit and annotate local HTML, then hand the review back to the current agent.",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "author": {"name": "philmingdao"},
       "homepage": "https://github.com/philmingdao/anno",
       "repository": "https://github.com/philmingdao/anno",

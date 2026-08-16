@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.1 - 2026-08-16
+
+- Make the Codex fallback runner portable across Windows, macOS, and Linux.
+- Prevent fallback transport errors from terminating the MCP server.
+
 ## 0.2.0 - 2026-08-16
 
 - Productized Anno as a public MIT-licensed repository and publishable npm package.

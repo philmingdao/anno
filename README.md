@@ -27,7 +27,7 @@ codex plugin marketplace add philmingdao/anno --ref main
 codex plugin add anno@anno
 ```
 
-For reproducible installations, replace `main` with a release tag such as `v0.2.0`.
+For reproducible installations, replace `main` with a release tag such as `v0.2.1`.
 
 ## Install in Claude Code
 

@@ -1,6 +1,6 @@
 {
   "name": "@philmingdao/anno",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A local-first HTML review editor and MCP server for Codex, Claude Code, WorkBuddy, CodeBuddy, and other agent hosts.",
   "license": "MIT",
   "author": "philmingdao",
