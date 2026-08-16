@@ -49,38 +49,46 @@ Codex、Claude Code、WorkBuddy 和 CodeBuddy 使用打包的插件清单。Curs
 | DeepSeek Harness | Cordis-to-MCP 桥接 | 实验性 |
 | Meta Muse Code | 本地 stdio MCP | 实验性 |
 
-## 在 Codex 中安装
+## 一条命令安装
+
+无需克隆仓库或自行构建。安装器会自动检测已安装的 Agent 工具并让你选择；它只合并现有 JSON/JSONC 中的 `anno` 项、安装共享 Skill、修改前生成带时间戳的备份，并完成一次 MCP 握手检查。
 
 ```bash
-codex plugin marketplace add philmingdao/anno --ref main
-codex plugin add anno@anno
+npx -y @philmingdao/anno@0.4.0 setup
 ```
 
-如需可复现的安装，请将 `main` 替换为发布标签，例如 `v0.3.1`。
-
-## 在 Claude Code 中安装
-
-```text
-/plugin marketplace add philmingdao/anno
-/plugin install anno@anno
-```
-
-## 在 WorkBuddy 或 CodeBuddy 中安装
-
-将 `philmingdao/anno` 添加为插件 marketplace，然后安装 `anno`。本地开发时，可以通过宿主的插件目录参数加载 `plugins/anno`。
-
-## 在 Cursor、Antigravity、Windsurf、Copilot 或 Muse Code 中安装
-
-这些工具使用同一个本地 MCP 服务。在 npm 包正式发布前，只需准备一次本地服务：
+自动化或指定宿主时可以直接执行：
 
 ```bash
-git clone https://github.com/philmingdao/anno.git
-cd anno
-npm install
-npm run build
+npx -y @philmingdao/anno@0.4.0 setup --host cursor
+npx -y @philmingdao/anno@0.4.0 setup --host cursor,windsurf,copilot
+npx -y @philmingdao/anno@0.4.0 setup --host antigravity --scope project
 ```
 
-在所选模板中，将 `/absolute/path/to/anno` 替换为仓库克隆后的绝对路径，再复制或合并到下列位置：
+macOS、Linux 和 Windows 使用同一命令，共同前提只有 Node.js 22+。验证安装或安全卸载：
+
+```bash
+npx -y @philmingdao/anno@0.4.0 doctor --host cursor
+npx -y @philmingdao/anno@0.4.0 uninstall --host cursor
+```
+
+Codex、Claude Code、WorkBuddy 和 CodeBuddy 通过各自原生插件系统安装；Cursor 获得兼容原生插件的 MCP/Skill 结构；Antigravity 获得完整原生插件包；Windsurf 和 Copilot 获得 MCP 与 Skill 配置。Muse Code 的公开配置约定尚未稳定，因此必须先确认路径：
+
+```bash
+npx -y @philmingdao/anno@0.4.0 setup --host muse --config /absolute/path/to/mcp.json
+```
+
+也可使用宿主原生命令：
+
+```bash
+copilot plugin install philmingdao/anno:plugins/anno
+```
+
+Anno 被 Cursor Marketplace 接受后，Cursor 用户可直接从 Marketplace 安装仓库中的原生插件。下载 npm 包后，Antigravity CLI 也可以执行 `agy plugin install /path/to/host-plugins/antigravity`。
+
+## 手动配置备用方案
+
+推荐使用统一安装器。以下固定版本模板保留给需要审核并手工合并配置的受管环境：
 
 | Agent 工具 | 配置模板 | 配置位置 |
 | --- | --- | --- |
@@ -91,23 +99,21 @@ npm run build
 | VS Code 中的 GitHub Copilot Chat | [`github-copilot/vscode-mcp.json`](plugins/anno/integrations/github-copilot/vscode-mcp.json) | 项目 `.vscode/mcp.json` |
 | Meta Muse Code | [`muse-code/mcp.json`](plugins/anno/integrations/muse-code/mcp.json) | 通过当前版本的 MCP 管理器导入；实验性 |
 
-Copilot CLI 也可以直接执行：
+Copilot CLI 也可以直接配置 MCP：
 
 ```bash
-copilot mcp add anno --env ANNO_HOST=copilot -- node /absolute/path/to/anno/plugins/anno/dist/index.js
+copilot mcp add anno --env ANNO_HOST=copilot -- npx -y @philmingdao/anno@0.4.0 mcp
 ```
 
 保存后请重启宿主或刷新 MCP 服务列表。GitHub 云端 Coding Agent 无法向用户浏览器暴露 Anno 的回环审阅地址，因此请在本地使用 Copilot。Muse Code 的公开 MCP 配置规范尚未稳定，目前仍标记为实验性支持。
 
 ## 直接使用 MCP 服务
 
-npm 包发布后，任何 stdio MCP 客户端都可以通过以下命令启动 Anno：
+任何 stdio MCP 客户端都可以通过以下命令启动 Anno：
 
 ```bash
-npx -y @philmingdao/anno
+npx -y @philmingdao/anno@0.4.0 mcp
 ```
-
-在 npm 包正式发布前，可以克隆本仓库、安装依赖并完成构建，然后让 MCP 客户端指向 `plugins/anno/dist/index.js`。
 
 ## 开发
 

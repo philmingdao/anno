@@ -49,38 +49,19 @@ Codex, Claude Code, WorkBuddy และ CodeBuddy ใช้ manifest ปลั�
 | DeepSeek Harness | บริดจ์ Cordis-to-MCP | ทดลอง |
 | Meta Muse Code | MCP แบบ stdio ภายในเครื่อง | ทดลอง |
 
-## ติดตั้งใน Codex
+## ติดตั้งด้วยคำสั่งเดียว
+
+ไม่ต้องโคลนหรือ build ตัวติดตั้งจะตรวจหาเอเจนต์ที่มีอยู่ รวมเฉพาะรายการ `anno` ลงใน JSON/JSONC เดิม ติดตั้ง Skill และ MCP สำรองไฟล์ และตรวจสอบการเชื่อมต่อ
 
 ```bash
-codex plugin marketplace add philmingdao/anno --ref main
-codex plugin add anno@anno
+npx -y @philmingdao/anno@0.4.0 setup
+npx -y @philmingdao/anno@0.4.0 setup --host cursor,windsurf,copilot
+npx -y @philmingdao/anno@0.4.0 doctor --host cursor
 ```
 
-หากต้องการการติดตั้งที่ทำซ้ำได้ ให้แทนที่ `main` ด้วยแท็กรีลีส เช่น `v0.3.1`
+Codex, Claude Code, WorkBuddy และ CodeBuddy ใช้ปลั๊กอินแบบเนทีฟ ส่วน Antigravity จะได้รับชุดปลั๊กอินครบถ้วน สำหรับ Muse Code ให้ระบุพาธการตั้งค่าที่ตรวจสอบแล้ว: `npx -y @philmingdao/anno@0.4.0 setup --host muse --config /absolute/path/to/mcp.json`
 
-## ติดตั้งใน Claude Code
-
-```text
-/plugin marketplace add philmingdao/anno
-/plugin install anno@anno
-```
-
-## ติดตั้งใน WorkBuddy หรือ CodeBuddy
-
-เพิ่ม `philmingdao/anno` เป็น marketplace ของปลั๊กอิน แล้วติดตั้ง `anno` ระหว่างการพัฒนาภายในเครื่องสามารถโหลด `plugins/anno` ผ่านตัวเลือกไดเรกทอรีปลั๊กอินของโฮสต์ได้
-
-## ติดตั้งใน Cursor, Antigravity, Windsurf, Copilot หรือ Muse Code
-
-เครื่องมือเหล่านี้ใช้เซิร์ฟเวอร์ MCP ภายในเครื่องตัวเดียวกัน ก่อนแพ็กเกจ npm จะเผยแพร่ ให้เตรียมเซิร์ฟเวอร์เพียงครั้งเดียว:
-
-```bash
-git clone https://github.com/philmingdao/anno.git
-cd anno
-npm install
-npm run build
-```
-
-ในเทมเพลตที่เลือก ให้แทนที่ `/absolute/path/to/anno` ด้วยพาธสัมบูรณ์ของรีโพซิทอรีที่โคลน แล้วคัดลอกหรือรวมไฟล์ไปยังตำแหน่งต่อไปนี้:
+สภาพแวดล้อมที่จัดการจากส่วนกลางสามารถใช้เทมเพลตที่ตรึงเวอร์ชันด้านล่าง
 
 | เครื่องมือเอเจนต์ | เทมเพลต | ตำแหน่งการตั้งค่า |
 | --- | --- | --- |
@@ -94,20 +75,18 @@ npm run build
 Copilot CLI สามารถตั้งค่าโดยตรงได้เช่นกัน:
 
 ```bash
-copilot mcp add anno --env ANNO_HOST=copilot -- node /absolute/path/to/anno/plugins/anno/dist/index.js
+copilot mcp add anno --env ANNO_HOST=copilot -- npx -y @philmingdao/anno@0.4.0 mcp
 ```
 
 หลังบันทึก ให้เริ่มเครื่องมือใหม่หรือรีเฟรชรายการเซิร์ฟเวอร์ MCP ตัว Coding Agent บนคลาวด์ของ GitHub ไม่สามารถเปิด URL แบบ loopback ของ Anno ในเบราว์เซอร์ผู้ใช้ได้ จึงควรใช้ Copilot ภายในเครื่อง ส่วน Muse Code ยังเป็นการรองรับแบบทดลองเพราะข้อกำหนดการตั้งค่า MCP สาธารณะยังไม่เสถียร
 
 ## ใช้เซิร์ฟเวอร์ MCP โดยตรง
 
-หลังจากเผยแพร่แพ็กเกจ npm แล้ว ไคลเอนต์ MCP แบบ stdio ใด ๆ สามารถเรียกใช้ได้ดังนี้:
+ไคลเอนต์ MCP แบบ stdio ใด ๆ สามารถเรียกใช้ได้ดังนี้:
 
 ```bash
-npx -y @philmingdao/anno
+npx -y @philmingdao/anno@0.4.0 mcp
 ```
-
-ก่อนเผยแพร่ ให้โคลนรีโพซิทอรี ติดตั้ง dependencies ทำการ build และตั้งค่าไคลเอนต์ MCP ให้ชี้ไปที่ `plugins/anno/dist/index.js`
 
 ## การพัฒนา
 

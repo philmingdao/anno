@@ -7,10 +7,10 @@ Anno separates its local editor and MCP session protocol from host-specific deli
 | Codex | Supported | Supported | Supported | Supported when a Codex thread id or host bridge is available |
 | Claude Code | Supported | Supported | Host-dependent | Falls back to a durable handoff the user or agent resumes |
 | WorkBuddy / CodeBuddy | Supported | Supported | Host-dependent | Falls back to a durable handoff the user or agent resumes |
-| Cursor | Supported through local stdio MCP | Skill can be reused as rules | Host-dependent | Durable manual resume |
-| Google Antigravity | Supported through local stdio MCP | Skill can be reused | Host-dependent | Durable manual resume |
-| Windsurf | Supported through Cascade MCP | Skill can be reused as rules | Host-dependent | Durable manual resume |
-| GitHub Copilot CLI / Chat | Supported through local stdio MCP | Skill can be reused as instructions | Host-dependent | Durable manual resume |
+| Cursor | Native plugin plus local stdio MCP | Installed as a Skill | Host-dependent | Durable manual resume |
+| Google Antigravity | Native plugin plus local stdio MCP | Installed in the plugin bundle | Host-dependent | Durable manual resume |
+| Windsurf | Supported through Cascade MCP | Installed as a Skill | Host-dependent | Durable manual resume |
+| GitHub Copilot CLI / Chat | Native CLI plugin or local stdio MCP | Installed as a Skill | Host-dependent | Durable manual resume |
 | Meta Muse Code | Experimental through local stdio MCP | Skill can be reused | Not verified | Durable manual resume |
 | Generic MCP client | Supported | Optional | Not required | Manual resume |
 | DeepSeek Harness | Experimental native bridge | Skill can be reused | Local URL only | Durable manual resume |
@@ -29,4 +29,4 @@ Set `ANNO_DATA_DIR` to an absolute or user-relative storage location resolved by
 
 ## Configuration templates
 
-Copy-ready templates and host-specific limitations are documented in [Agent tool integrations](agent-tools.md). The templates intentionally contain `/absolute/path/to/anno`; replace it with the directory where this repository was cloned. When `@philmingdao/anno` is published to npm, the same hosts can launch it with `npx -y @philmingdao/anno` instead.
+The recommended path is `npx -y @philmingdao/anno@0.4.0 setup`; it safely merges host configuration, installs the shared Skill, and verifies the MCP handshake. Version-pinned templates and host-specific limitations are documented in [Agent tool integrations](agent-tools.md).

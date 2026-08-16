@@ -3,7 +3,9 @@
     "anno": {
       "command": "npx",
       "args": ["-y", "@philmingdao/anno@0.4.0", "mcp"],
-      "env": {"ANNO_HOST": "muse"}
+      "env": {
+        "ANNO_HOST": "antigravity"
+      }
     }
   }
 }

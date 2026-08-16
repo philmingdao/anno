@@ -49,38 +49,19 @@ Kopierfertige Konfigurationen und hostspezifische Einschränkungen finden Sie im
 | DeepSeek Harness | Cordis-to-MCP-Bridge | Experimentell |
 | Meta Muse Code | Lokales stdio-MCP | Experimentell |
 
-## Installation in Codex
+## Installation mit einem Befehl
+
+Klonen und Build sind nicht nötig. Der Installer erkennt verfügbare Agenten, ergänzt nur den `anno`-Eintrag in vorhandenem JSON/JSONC, installiert Skill und MCP, erstellt ein Backup und prüft die Verbindung.
 
 ```bash
-codex plugin marketplace add philmingdao/anno --ref main
-codex plugin add anno@anno
+npx -y @philmingdao/anno@0.4.0 setup
+npx -y @philmingdao/anno@0.4.0 setup --host cursor,windsurf,copilot
+npx -y @philmingdao/anno@0.4.0 doctor --host cursor
 ```
 
-Ersetzen Sie für reproduzierbare Installationen `main` durch ein Release-Tag wie `v0.3.1`.
+Codex, Claude Code, WorkBuddy und CodeBuddy verwenden ihre nativen Plugins; Antigravity erhält ein vollständiges Plugin-Bundle. Für Muse Code geben Sie den bestätigten Konfigurationspfad an: `npx -y @philmingdao/anno@0.4.0 setup --host muse --config /absolute/path/to/mcp.json`.
 
-## Installation in Claude Code
-
-```text
-/plugin marketplace add philmingdao/anno
-/plugin install anno@anno
-```
-
-## Installation in WorkBuddy oder CodeBuddy
-
-Fügen Sie `philmingdao/anno` als Plugin-Marketplace hinzu und installieren Sie anschließend `anno`. Für die lokale Entwicklung kann `plugins/anno` über die Plugin-Verzeichnisoption des Hosts geladen werden.
-
-## Installation in Cursor, Antigravity, Windsurf, Copilot oder Muse Code
-
-Diese Tools verwenden denselben lokalen MCP-Server. Bis zur Veröffentlichung des npm-Pakets muss er einmal vorbereitet werden:
-
-```bash
-git clone https://github.com/philmingdao/anno.git
-cd anno
-npm install
-npm run build
-```
-
-Ersetzen Sie in der gewählten Vorlage `/absolute/path/to/anno` durch den absoluten Pfad des geklonten Repositorys und kopieren oder ergänzen Sie die Datei am angegebenen Ziel:
+Verwaltete Umgebungen können die folgenden versionsgebundenen Vorlagen verwenden.
 
 | Agent-Tool | Vorlage | Konfigurationsziel |
 | --- | --- | --- |
@@ -94,20 +75,18 @@ Ersetzen Sie in der gewählten Vorlage `/absolute/path/to/anno` durch den absolu
 Copilot CLI kann auch direkt konfiguriert werden:
 
 ```bash
-copilot mcp add anno --env ANNO_HOST=copilot -- node /absolute/path/to/anno/plugins/anno/dist/index.js
+copilot mcp add anno --env ANNO_HOST=copilot -- npx -y @philmingdao/anno@0.4.0 mcp
 ```
 
 Starten Sie das Tool nach dem Speichern neu oder aktualisieren Sie seine MCP-Serverliste. Der GitHub Coding Agent in der Cloud kann Annos Loopback-URL nicht im Browser des Benutzers öffnen; verwenden Sie Copilot lokal. Muse Code bleibt experimentell, da sein öffentlicher MCP-Konfigurationsvertrag noch nicht stabil ist.
 
 ## MCP-Server direkt verwenden
 
-Nach Veröffentlichung des npm-Pakets kann jeder stdio-MCP-Client Anno so starten:
+Jeder stdio-MCP-Client kann Anno so starten:
 
 ```bash
-npx -y @philmingdao/anno
+npx -y @philmingdao/anno@0.4.0 mcp
 ```
-
-Bis dahin klonen Sie das Repository, installieren die Abhängigkeiten, erstellen den Build und verweisen den MCP-Client auf `plugins/anno/dist/index.js`.
 
 ## Entwicklung
 

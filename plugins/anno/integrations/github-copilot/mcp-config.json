@@ -2,8 +2,8 @@
   "mcpServers": {
     "anno": {
       "type": "local",
-      "command": "node",
-      "args": ["/absolute/path/to/anno/plugins/anno/dist/index.js"],
+      "command": "npx",
+      "args": ["-y", "@philmingdao/anno@0.4.0", "mcp"],
       "env": {"ANNO_HOST": "copilot"},
       "tools": ["*"]
     }

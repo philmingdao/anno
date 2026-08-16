@@ -24,7 +24,7 @@ export function apply(ctx) {
             env: { ...process.env, ANNO_HOST: 'dsh' },
             stderr: 'pipe'
         });
-        client = new Client({ name: 'anno-dsh', version: '0.3.1-experimental.1' });
+        client = new Client({ name: 'anno-dsh', version: '0.4.0-experimental.1' });
         await client.connect(transport);
         if (disposed) {
             await client.close();

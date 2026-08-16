@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.0 - 2026-08-16
+
+- Added `anno setup`, `anno doctor`, and `anno uninstall` with automatic host detection, JSONC-preserving merges, scoped backups, Skill installation, and MCP handshake verification.
+- Replaced clone/build instructions with one `npx` command across all ten README languages.
+- Added native Cursor marketplace/plugin metadata, a native Antigravity bundle, direct GitHub Copilot plugin support, and official MCP Registry metadata.
+- Version-pinned all manual integration templates to the published npm package.
+- Added installer idempotency, preservation, uninstall, Antigravity, Muse, CLI, package, and manifest validation coverage.
+
 ## 0.3.1 - 2026-08-16
 
 - Added an explicit support matrix to every translated README.

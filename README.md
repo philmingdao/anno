@@ -49,38 +49,46 @@ See [Agent tool integrations](docs/agent-tools.md) for copy-ready configuration 
 | DeepSeek Harness | Cordis-to-MCP bridge | Experimental |
 | Meta Muse Code | Local stdio MCP | Experimental |
 
-## Install in Codex
+## One-command install
+
+No clone or build is required. The installer detects available agent tools, lets you choose them interactively, merges only the `anno` entry into existing JSON/JSONC configuration, installs the shared skill, creates a timestamped backup before changes, and runs an MCP handshake.
 
 ```bash
-codex plugin marketplace add philmingdao/anno --ref main
-codex plugin add anno@anno
+npx -y @philmingdao/anno@0.4.0 setup
 ```
 
-For reproducible installations, replace `main` with a release tag such as `v0.3.1`.
-
-## Install in Claude Code
-
-```text
-/plugin marketplace add philmingdao/anno
-/plugin install anno@anno
-```
-
-## Install in WorkBuddy or CodeBuddy
-
-Add `philmingdao/anno` as a plugin marketplace, then install `anno`. During local development, load `plugins/anno` with the host's plugin-directory option.
-
-## Install in Cursor, Antigravity, Windsurf, Copilot, or Muse Code
-
-These hosts run the same local MCP server. Until the npm package is published, prepare it once:
+For unattended or host-specific installation:
 
 ```bash
-git clone https://github.com/philmingdao/anno.git
-cd anno
-npm install
-npm run build
+npx -y @philmingdao/anno@0.4.0 setup --host cursor
+npx -y @philmingdao/anno@0.4.0 setup --host cursor,windsurf,copilot
+npx -y @philmingdao/anno@0.4.0 setup --host antigravity --scope project
 ```
 
-In the selected template, replace `/absolute/path/to/anno` with the absolute path of the cloned repository, then copy or merge it at the destination below:
+Use the same command on macOS, Linux, and Windows. Node.js 22+ is the only shared prerequisite. Verify or safely remove Anno with:
+
+```bash
+npx -y @philmingdao/anno@0.4.0 doctor --host cursor
+npx -y @philmingdao/anno@0.4.0 uninstall --host cursor
+```
+
+Codex, Claude Code, WorkBuddy, and CodeBuddy are installed through their native plugin systems. Cursor receives a native plugin-compatible MCP/Skill layout; Antigravity receives a complete native plugin bundle; Windsurf receives MCP plus Skill configuration; and Copilot receives MCP plus Skill configuration. Muse Code requires the confirmed config path because its public configuration contract is not stable:
+
+```bash
+npx -y @philmingdao/anno@0.4.0 setup --host muse --config /absolute/path/to/mcp.json
+```
+
+Native shortcuts are also available:
+
+```bash
+copilot plugin install philmingdao/anno:plugins/anno
+```
+
+After Anno is accepted into Cursor Marketplace, Cursor users can install the repository's native plugin directly from the marketplace. Antigravity CLI can install the packaged directory with `agy plugin install /path/to/host-plugins/antigravity` when working from a downloaded package.
+
+## Manual configuration fallback
+
+The universal installer is recommended. These version-pinned templates are retained for managed environments that require review and manual merging:
 
 | Agent tool | Template | Configuration destination |
 | --- | --- | --- |
@@ -91,23 +99,21 @@ In the selected template, replace `/absolute/path/to/anno` with the absolute pat
 | GitHub Copilot Chat in VS Code | [`github-copilot/vscode-mcp.json`](plugins/anno/integrations/github-copilot/vscode-mcp.json) | Project `.vscode/mcp.json` |
 | Meta Muse Code | [`muse-code/mcp.json`](plugins/anno/integrations/muse-code/mcp.json) | Import through the build's MCP manager; experimental |
 
-Copilot CLI can also be configured directly:
+Copilot CLI can also be configured directly through MCP:
 
 ```bash
-copilot mcp add anno --env ANNO_HOST=copilot -- node /absolute/path/to/anno/plugins/anno/dist/index.js
+copilot mcp add anno --env ANNO_HOST=copilot -- npx -y @philmingdao/anno@0.4.0 mcp
 ```
 
 Restart or refresh the host's MCP server list after saving. GitHub's cloud coding agent cannot expose Anno's loopback review URL; use Copilot locally. Muse Code support remains experimental because its public MCP configuration contract is not yet stable.
 
 ## Use the MCP server directly
 
-After the npm package is published, any stdio MCP client can launch:
+Any stdio MCP client can launch:
 
 ```bash
-npx -y @philmingdao/anno
+npx -y @philmingdao/anno@0.4.0 mcp
 ```
-
-Until then, clone the repository, install dependencies, build, and point the MCP client to `plugins/anno/dist/index.js`.
 
 ## Development
 

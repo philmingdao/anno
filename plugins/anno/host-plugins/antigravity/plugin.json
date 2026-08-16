@@ -1,0 +1,5 @@
+{
+  "$schema": "https://antigravity.google/schemas/v1/plugin.json",
+  "name": "anno",
+  "description": "Open, edit, annotate, and hand off local HTML review sessions."
+}
