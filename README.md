@@ -1,3 +1,14 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="plugins/anno/assets/logo-dark.svg">
+    <img src="plugins/anno/assets/logo.svg" alt="Anno" width="240">
+  </picture>
+</p>
+
+<p align="center">
+  <strong>English</strong> · <a href="README.zh-CN.md">简体中文</a>
+</p>
+
 # Anno
 
 Anno is a local-first HTML review workspace for AI coding agents. It opens an isolated copy of a local HTML file in a browser, supports direct text and formatting edits, element comments, area annotations, and slide-aware review, then returns a durable handoff that an agent can claim and resolve into a verified standalone HTML file.
