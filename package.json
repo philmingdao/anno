@@ -1,0 +1,16 @@
+{
+  "name": "anno-distribution",
+  "version": "0.2.0",
+  "private": true,
+  "workspaces": ["plugins/anno", "adapters/dsh"],
+  "scripts": {
+    "build": "npm run build --workspace @philmingdao/anno",
+    "build:dsh": "npm run build --workspace @philmingdao/anno-dsh",
+    "test": "npm run test --workspaces --if-present",
+    "pack:check": "npm run pack:check --workspace @philmingdao/anno",
+    "validate:plugin": "node scripts/validate-plugin.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

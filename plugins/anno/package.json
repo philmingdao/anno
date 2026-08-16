@@ -1,0 +1,57 @@
+{
+  "name": "@philmingdao/anno",
+  "version": "0.2.0",
+  "description": "A local-first HTML review editor and MCP server for Codex, Claude Code, WorkBuddy, CodeBuddy, and other agent hosts.",
+  "license": "MIT",
+  "author": "philmingdao",
+  "homepage": "https://github.com/philmingdao/anno#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/philmingdao/anno.git",
+    "directory": "plugins/anno"
+  },
+  "bugs": "https://github.com/philmingdao/anno/issues",
+  "keywords": ["mcp", "html", "annotation", "codex", "claude-code", "workbuddy", "codebuddy"],
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js",
+    "./server": "./dist/index.js",
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "anno-mcp": "dist/index.js"
+  },
+  "files": [
+    ".codex-plugin/",
+    ".claude-plugin/",
+    ".codebuddy-plugin/",
+    ".workbuddy-plugin/",
+    ".mcp.json",
+    "assets/",
+    "dist/",
+    "skills/",
+    "LICENSE",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "test": "npm run build && node --test test/*.test.mjs",
+    "pack:check": "npm pack --dry-run",
+    "prepublishOnly": "npm test"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/server": "^2.0.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/client": "^2.0.0",
+    "@types/node": "^26.2.0",
+    "typescript": "^7.0.2"
+  }
+}

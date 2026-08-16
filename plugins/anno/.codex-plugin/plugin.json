@@ -1,0 +1,37 @@
+{
+  "name": "anno",
+  "version": "0.2.0",
+  "description": "Preview, edit, and annotate local HTML, then hand the complete review to the current agent for generation and delivery.",
+  "author": {
+    "name": "philmingdao",
+    "url": "https://github.com/philmingdao"
+  },
+  "homepage": "https://github.com/philmingdao/anno",
+  "repository": "https://github.com/philmingdao/anno",
+  "license": "MIT",
+  "keywords": ["html", "review", "annotation", "mcp"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Anno",
+    "shortDescription": "Edit and annotate local HTML with an agent.",
+    "longDescription": "Open a local HTML artifact in Anno, edit text and structured formatting in place, capture free-form annotations, then return the complete review session to the current agent so it can generate, validate, register, and deliver the final standalone HTML file.",
+    "developerName": "philmingdao",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive",
+      "Write",
+      "Local files"
+    ],
+    "defaultPrompt": [
+      "Open this HTML in Anno and generate the final file.",
+      "Continue the Anno review session and resolve pending annotations."
+    ],
+    "brandColor": "#1A1A1A",
+    "composerIcon": "./assets/icon.svg",
+    "logo": "./assets/logo.svg",
+    "screenshots": [
+      "./assets/screenshot1.png"
+    ]
+  },
+  "mcpServers": "./.mcp.json"
+}

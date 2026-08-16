@@ -1,0 +1,20 @@
+{
+  "name": "anno",
+  "interface": {
+    "displayName": "Anno"
+  },
+  "plugins": [
+    {
+      "name": "anno",
+      "source": {
+        "source": "local",
+        "path": "./plugins/anno"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

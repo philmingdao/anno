@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "anno": {
+      "title": "Anno",
+      "description": "Create local HTML review sessions and generate final artifacts.",
+      "cwd": ".",
+      "command": "node",
+      "args": ["./dist/index.js"]
+    }
+  }
+}
