@@ -1,7 +1,7 @@
 {
   "name": "@philmingdao/anno",
-  "version": "0.2.1",
-  "description": "A local-first HTML review editor and MCP server for Codex, Claude Code, WorkBuddy, CodeBuddy, and other agent hosts.",
+  "version": "0.3.0",
+  "description": "A local-first HTML review editor and MCP server for AI coding agents.",
   "license": "MIT",
   "author": "philmingdao",
   "homepage": "https://github.com/philmingdao/anno#readme",
@@ -11,7 +11,7 @@
     "directory": "plugins/anno"
   },
   "bugs": "https://github.com/philmingdao/anno/issues",
-  "keywords": ["mcp", "html", "annotation", "codex", "claude-code", "workbuddy", "codebuddy"],
+  "keywords": ["mcp", "html", "annotation", "codex", "claude-code", "cursor", "windsurf", "copilot", "antigravity"],
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -31,6 +31,7 @@
     ".mcp.json",
     "assets/",
     "dist/",
+    "integrations/",
     "skills/",
     "LICENSE",
     "README.md"

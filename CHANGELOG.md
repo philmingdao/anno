@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.0 - 2026-08-16
+
+- Added full README translations for Japanese, Korean, French, Spanish, German, Italian, Portuguese, and Thai, with a ten-language switcher.
+- Added host-neutral support and copy-ready MCP templates for Cursor, Google Antigravity, Windsurf, GitHub Copilot CLI/Chat, and Meta Muse Code.
+- Documented local-browser handoff behavior and cloud-agent limitations.
+- Marked Muse Code integration experimental while its public configuration contract remains in beta.
+
 ## 0.2.1 - 2026-08-16
 
 - Make the Codex fallback runner portable across Windows, macOS, and Linux.

@@ -1,6 +1,6 @@
 {
   "name": "anno",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Local-first HTML editing and annotation through an MCP review session.",
   "author": {"name": "philmingdao"},
   "homepage": "https://github.com/philmingdao/anno",

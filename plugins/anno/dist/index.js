@@ -11,13 +11,26 @@ import { homedir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 const SERVER_NAME = 'anno-mcp-server';
-const SERVER_VERSION = '0.2.1';
+const SERVER_VERSION = '0.3.0';
 const MAX_HTML_BYTES = 100 * 1024 * 1024;
 const MAX_JSON_BYTES = 2 * 1024 * 1024;
 const PLUGIN_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const HOST_KINDS = [
+    'codex',
+    'claude',
+    'codebuddy',
+    'workbuddy',
+    'cursor',
+    'antigravity',
+    'windsurf',
+    'copilot',
+    'muse',
+    'dsh',
+    'generic'
+];
 function currentHost() {
     const configured = process.env.ANNO_HOST?.toLowerCase();
-    if (configured && ['codex', 'claude', 'codebuddy', 'workbuddy', 'dsh', 'generic'].includes(configured)) {
+    if (configured && HOST_KINDS.includes(configured)) {
         return configured;
     }
     if (process.env.CODEX_THREAD_ID || process.env.CODEX_SESSION_ID)

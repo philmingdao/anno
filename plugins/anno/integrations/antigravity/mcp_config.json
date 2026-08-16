@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "anno": {
+      "command": "node",
+      "args": ["/absolute/path/to/anno/plugins/anno/dist/index.js"],
+      "env": {"ANNO_HOST": "antigravity"}
+    }
+  }
+}

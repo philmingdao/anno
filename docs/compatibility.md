@@ -7,6 +7,11 @@ Anno separates its local editor and MCP session protocol from host-specific deli
 | Codex | Supported | Supported | Supported | Supported when a Codex thread id or host bridge is available |
 | Claude Code | Supported | Supported | Host-dependent | Falls back to a durable handoff the user or agent resumes |
 | WorkBuddy / CodeBuddy | Supported | Supported | Host-dependent | Falls back to a durable handoff the user or agent resumes |
+| Cursor | Supported through local stdio MCP | Skill can be reused as rules | Host-dependent | Durable manual resume |
+| Google Antigravity | Supported through local stdio MCP | Skill can be reused | Host-dependent | Durable manual resume |
+| Windsurf | Supported through Cascade MCP | Skill can be reused as rules | Host-dependent | Durable manual resume |
+| GitHub Copilot CLI / Chat | Supported through local stdio MCP | Skill can be reused as instructions | Host-dependent | Durable manual resume |
+| Meta Muse Code | Experimental through local stdio MCP | Skill can be reused | Not verified | Durable manual resume |
 | Generic MCP client | Supported | Optional | Not required | Manual resume |
 | DeepSeek Harness | Experimental native bridge | Skill can be reused | Local URL only | Durable manual resume |
 
@@ -18,6 +23,10 @@ The local editor URL works independently of embedded MCP UI support. Hosts that 
 
 ## Host selection
 
-Set `ANNO_HOST` to one of `codex`, `claude`, `codebuddy`, `workbuddy`, `dsh`, or `generic`. Codex is detected automatically when `CODEX_THREAD_ID` or `CODEX_SESSION_ID` is present. Only the Codex adapter invokes `codex exec resume`; other hosts never execute a different agent CLI.
+Set `ANNO_HOST` to one of `codex`, `claude`, `codebuddy`, `workbuddy`, `cursor`, `antigravity`, `windsurf`, `copilot`, `muse`, `dsh`, or `generic`. Codex is detected automatically when `CODEX_THREAD_ID` or `CODEX_SESSION_ID` is present. The integration templates set this variable explicitly for other hosts. Only the Codex adapter invokes `codex exec resume`; other hosts never execute a different agent CLI.
 
 Set `ANNO_DATA_DIR` to an absolute or user-relative storage location resolved by the launching shell. The legacy `ANNO_HOME` and `HTML_REVIEW_STUDIO_HOME` variables remain supported.
+
+## Configuration templates
+
+Copy-ready templates and host-specific limitations are documented in [Agent tool integrations](agent-tools.md). The templates intentionally contain `/absolute/path/to/anno`; replace it with the directory where this repository was cloned. When `@philmingdao/anno` is published to npm, the same hosts can launch it with `npx -y @philmingdao/anno` instead.

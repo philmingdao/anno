@@ -6,14 +6,14 @@
 </p>
 
 <p align="center">
-  <a href="README.md">English</a> · <strong>简体中文</strong>
+  <a href="README.md">English</a> · <strong>简体中文</strong> · <a href="README.ja.md">日本語</a> · <a href="README.ko.md">한국어</a> · <a href="README.fr.md">Français</a> · <a href="README.es.md">Español</a> · <a href="README.de.md">Deutsch</a> · <a href="README.it.md">Italiano</a> · <a href="README.pt.md">Português</a> · <a href="README.th.md">ไทย</a>
 </p>
 
 # Anno
 
 Anno 是一个面向 AI 编程 Agent 的、本地优先的 HTML 审阅工作台。它会在浏览器中打开本地 HTML 文件的隔离副本，支持直接编辑文本和格式、添加元素评注与区域评注，并能感知幻灯片页面。审阅完成后，Anno 会生成一份持久化的交接任务，由 Agent 接管并处理为经过验证的独立 HTML 文件。
 
-本仓库包含一套共享的 MCP 服务和与宿主无关的 Skill，同时为 Codex、Claude Code、WorkBuddy 和 CodeBuddy 提供轻量级插件清单。由于 DeepSeek Harness 的插件 API 仍处于开发者预览阶段，目前对它的支持属于实验性质。
+本仓库包含一套共享的 MCP 服务和与宿主无关的 Skill：为支持原生插件的宿主提供插件清单，并为 Cursor、Google Antigravity、Windsurf、GitHub Copilot 和 Meta Muse Code 提供可直接复制的 MCP 配置模板。DeepSeek Harness 与 Muse Code 支持目前属于实验性质。
 
 ## 主要特性
 
@@ -31,6 +31,12 @@ Anno 是一个面向 AI 编程 Agent 的、本地优先的 HTML 审阅工作台�
 - 支持本地 stdio MCP 服务并能访问本地文件的宿主
 - 用于打开审阅编辑器的浏览器
 
+## 支持的 Agent 工具
+
+Codex、Claude Code、WorkBuddy 和 CodeBuddy 使用打包的插件清单。Cursor、Google Antigravity、Windsurf、GitHub Copilot CLI/Chat 和 Muse Code 通过各自的配置模板连接同一个本地 stdio MCP 服务。DeepSeek Harness 使用实验性的原生桥接。
+
+可直接复制的配置和各宿主限制，请参阅 [Agent 工具集成说明](docs/agent-tools.md)。
+
 ## 在 Codex 中安装
 
 ```bash
@@ -38,7 +44,7 @@ codex plugin marketplace add philmingdao/anno --ref main
 codex plugin add anno@anno
 ```
 
-如需可复现的安装，请将 `main` 替换为发布标签，例如 `v0.2.1`。
+如需可复现的安装，请将 `main` 替换为发布标签，例如 `v0.3.0`。
 
 ## 在 Claude Code 中安装
 

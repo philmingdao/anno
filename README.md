@@ -6,14 +6,14 @@
 </p>
 
 <p align="center">
-  <strong>English</strong> · <a href="README.zh-CN.md">简体中文</a>
+  <strong>English</strong> · <a href="README.zh-CN.md">简体中文</a> · <a href="README.ja.md">日本語</a> · <a href="README.ko.md">한국어</a> · <a href="README.fr.md">Français</a> · <a href="README.es.md">Español</a> · <a href="README.de.md">Deutsch</a> · <a href="README.it.md">Italiano</a> · <a href="README.pt.md">Português</a> · <a href="README.th.md">ไทย</a>
 </p>
 
 # Anno
 
 Anno is a local-first HTML review workspace for AI coding agents. It opens an isolated copy of a local HTML file in a browser, supports direct text and formatting edits, element comments, area annotations, and slide-aware review, then returns a durable handoff that an agent can claim and resolve into a verified standalone HTML file.
 
-The repository contains one shared MCP server and host-neutral skill, plus lightweight manifests for Codex, Claude Code, WorkBuddy, and CodeBuddy. DeepSeek Harness support is experimental while its plugin API remains in developer preview.
+The repository contains one shared MCP server and host-neutral skill, native plugin manifests where a host supports them, and copy-ready MCP templates for Cursor, Google Antigravity, Windsurf, GitHub Copilot, and Meta Muse Code. DeepSeek Harness and Muse Code support are experimental.
 
 ## Highlights
 
@@ -31,6 +31,12 @@ The repository contains one shared MCP server and host-neutral skill, plus light
 - A host that supports local stdio MCP servers and can access local files
 - A browser for the review editor
 
+## Supported agent tools
+
+Codex, Claude Code, WorkBuddy, and CodeBuddy use packaged plugin manifests. Cursor, Google Antigravity, Windsurf, GitHub Copilot CLI/Chat, and Muse Code connect to the same local stdio MCP server through host-specific configuration templates. DeepSeek Harness uses an experimental native bridge.
+
+See [Agent tool integrations](docs/agent-tools.md) for copy-ready configuration and host limitations.
+
 ## Install in Codex
 
 ```bash
@@ -38,7 +44,7 @@ codex plugin marketplace add philmingdao/anno --ref main
 codex plugin add anno@anno
 ```
 
-For reproducible installations, replace `main` with a release tag such as `v0.2.1`.
+For reproducible installations, replace `main` with a release tag such as `v0.3.0`.
 
 ## Install in Claude Code
 
