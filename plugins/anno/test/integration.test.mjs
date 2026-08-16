@@ -6,14 +6,14 @@ import path from 'node:path';
 import { Client } from '@modelcontextprotocol/client';
 import { StdioClientTransport } from '@modelcontextprotocol/client/stdio';
 
-test('starts a host-neutral review session and exposes a portable handoff', async () => {
+test('starts a Cursor review session and exposes a portable host-neutral handoff', async () => {
   const root = await mkdtemp(path.join(tmpdir(), 'anno-'));
   const source = path.join(root, 'sample.html');
   const sourceHtml = '<!doctype html><html><head><title>Sample</title></head><body><main><h1>Hello</h1><p>Original text</p><a href="#target"><span>Linked text</span></a><span id="target">Target</span></main></body></html>';
   await writeFile(source, sourceHtml, 'utf8');
   const env = Object.fromEntries(Object.entries(process.env).filter(([, value]) => typeof value === 'string'));
   env.HTML_REVIEW_STUDIO_HOME = path.join(root, 'state');
-  env.ANNO_HOST = 'generic';
+  env.ANNO_HOST = 'cursor';
   delete env.CODEX_THREAD_ID;
   delete env.CODEX_SESSION_ID;
   env.ANNO_DISABLE_CODEX_FALLBACK = '1';
@@ -127,7 +127,7 @@ test('starts a host-neutral review session and exposes a portable handoff', asyn
     assert.equal(generation.handoff_ready, true);
     assert.equal(generation.session.status, 'needs_agent');
     assert.equal(generation.session.handoff.status, 'pending');
-    assert.equal(generation.session.handoff.host, 'generic');
+    assert.equal(generation.session.handoff.host, 'cursor');
     assert.equal(generation.session.handoff.has_host_target, false);
     assert.match(await readFile(generation.draft_html_path, 'utf8'), /Revised text/);
     const request = JSON.parse(await readFile(generation.generation_request_path, 'utf8'));
