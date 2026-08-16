@@ -30,6 +30,7 @@ npx -y @philmingdao/anno@0.4.0 uninstall --host cursor
 | Google Antigravity | Writes a complete native plugin bundle for CLI and IDE locations | `agy plugin install /path/to/host-plugins/antigravity` |
 | Windsurf | Merges Cascade MCP and installs the Skill | Use the version-pinned template below |
 | GitHub Copilot CLI | Merges MCP and installs the Skill | `copilot plugin install philmingdao/anno:plugins/anno` |
+| DeepSeek Harness | Independent native plug-in | `dsh plugin --profile web add github:philmingdao/anno-dsh-native` |
 | Muse Code | Requires a caller-confirmed `--config` path | Experimental; use the installed build's MCP manager |
 
 If Codex already has a different Anno plugin id, setup stops instead of replacing it. Review the conflict and rerun with `--force` only when the native marketplace installation should become active.
@@ -57,6 +58,17 @@ copilot plugin install philmingdao/anno:plugins/anno
 Alternatively, `setup --host copilot` safely merges user or project configuration. Manual fallbacks are [`plugins/anno/integrations/github-copilot/mcp-config.json`](../plugins/anno/integrations/github-copilot/mcp-config.json) and [`plugins/anno/integrations/github-copilot/vscode-mcp.json`](../plugins/anno/integrations/github-copilot/vscode-mcp.json). See GitHub's [CLI plugin reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-plugin-reference) and [MCP documentation](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/add-mcp-servers).
 
 GitHub's cloud coding agent cannot expose Anno's loopback URL to the user's browser; use a local Copilot CLI or IDE session.
+
+## DeepSeek Harness
+
+Anno's maintained DeepSeek solution lives in the independent [`philmingdao/anno-dsh-native`](https://github.com/philmingdao/anno-dsh-native) repository. It is an in-process Cordis plug-in built with DeepSeek Harness itself: it joins the DSH profile, tool registry, system prompt, and `agent.followup` lifecycle directly. It does not run the shared MCP server or an MCP bridge.
+
+```bash
+dsh plugin --profile web add github:philmingdao/anno-dsh-native
+dsh web
+```
+
+The default profile is `web`; select another with `--profile`. See the [native plug-in repository](https://github.com/philmingdao/anno-dsh-native) for its architecture, source installation, and uninstall steps. DeepSeek Harness itself remains a developer preview, so the plug-in currently declares and tests `>=0.1.0-rc.6 <0.2.0` rather than following unverified releases automatically.
 
 ## Meta Muse Code
 

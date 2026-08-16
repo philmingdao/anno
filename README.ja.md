@@ -13,7 +13,7 @@
 
 Anno は、AI コーディングエージェント向けのローカルファーストな HTML レビューワークスペースです。ローカル HTML ファイルの隔離コピーをブラウザーで開き、テキストや書式の直接編集、要素コメント、範囲注釈、スライド単位のレビューを行えます。レビュー後は永続的なハンドオフを作成し、エージェントがそれを引き継いで、検証済みの単一 HTML ファイルに仕上げます。
 
-このリポジトリには、共有 MCP サーバーとホスト非依存の Skill、対応ホスト向けのネイティブプラグインマニフェスト、そして Cursor、Google Antigravity、Windsurf、GitHub Copilot、Meta Muse Code 用のコピー可能な MCP テンプレートが含まれます。DeepSeek Harness と Muse Code のサポートは実験的です。
+このリポジトリには、共有 MCP サーバーとホスト非依存の Skill、対応ホスト向けのネイティブプラグインマニフェスト、そして Cursor、Google Antigravity、Windsurf、GitHub Copilot、Meta Muse Code 用のコピー可能な MCP テンプレートが含まれます。DeepSeek Harness 対応は、DeepSeek Harness 自体を使って開発されたインプロセスのネイティブプラグイン [`philmingdao/anno-dsh-native`](https://github.com/philmingdao/anno-dsh-native) として別リポジトリで保守されています。Muse Code は引き続き実験的です。
 
 ## 主な機能
 
@@ -33,7 +33,7 @@ Anno は、AI コーディングエージェント向けのローカルファー
 
 ## 対応エージェントツール
 
-Codex、Claude Code、WorkBuddy、CodeBuddy はパッケージ済みプラグインマニフェストを使用します。Cursor、Google Antigravity、Windsurf、GitHub Copilot CLI/Chat、Muse Code は、ホスト別テンプレートを通じて同じローカル stdio MCP サーバーへ接続します。DeepSeek Harness には実験的なネイティブブリッジがあります。
+Codex、Claude Code、WorkBuddy、CodeBuddy はパッケージ済みプラグインマニフェストを使用します。Cursor、Google Antigravity、Windsurf、GitHub Copilot CLI/Chat、Muse Code は、ホスト別テンプレートを通じて同じローカル stdio MCP サーバーへ接続します。DeepSeek Harness は独立したネイティブリポジトリ [`anno-dsh-native`](https://github.com/philmingdao/anno-dsh-native) を使用し、MCP ブリッジを介さず DSH のプロファイル、ツールレジストリ、エージェントライフサイクルへ直接統合します。
 
 設定例とホストごとの制限については、[エージェントツール統合ガイド](docs/agent-tools.md)を参照してください。
 
@@ -46,7 +46,7 @@ Codex、Claude Code、WorkBuddy、CodeBuddy はパッケージ済みプラグイ
 | Google Antigravity | ローカル stdio MCP | 対応 |
 | Windsurf | ローカル stdio MCP | 対応 |
 | GitHub Copilot CLI / Chat | ローカル stdio MCP | ローカル実行に対応 |
-| DeepSeek Harness | Cordis-to-MCP ブリッジ | 実験的 |
+| DeepSeek Harness | 独立した DSH ネイティブプラグイン | 0.1.0-rc.6 で検証済み |
 | Meta Muse Code | ローカル stdio MCP | 実験的 |
 
 ## 1 コマンドでインストール
@@ -58,6 +58,15 @@ npx -y @philmingdao/anno@0.4.0 setup
 npx -y @philmingdao/anno@0.4.0 setup --host cursor,windsurf,copilot
 npx -y @philmingdao/anno@0.4.0 doctor --host cursor
 ```
+
+DeepSeek Harness 向けネイティブ実装は、独立リポジトリからインストールします。
+
+```bash
+dsh plugin --profile web add github:philmingdao/anno-dsh-native
+dsh web
+```
+
+アーキテクチャ、互換性、ソースからのインストールについては [`philmingdao/anno-dsh-native`](https://github.com/philmingdao/anno-dsh-native) を参照してください。このプラグインは DeepSeek Harness を使って開発・検証されています。
 
 Codex、Claude Code、WorkBuddy、CodeBuddy にはネイティブプラグインとして、Antigravity には完全なプラグインバンドルとして設定されます。Muse Code では確認済みの設定パスを指定してください：`npx -y @philmingdao/anno@0.4.0 setup --host muse --config /absolute/path/to/mcp.json`。
 
@@ -96,7 +105,7 @@ npm test
 npm run pack:check
 ```
 
-公開可能なパッケージは `plugins/anno` にあります。生成された依存関係とローカルレビューセッションはコミットされません。
+MCP コアパッケージは `plugins/anno` にあり、DeepSeek Harness 実装は独立リポジトリ [`anno-dsh-native`](https://github.com/philmingdao/anno-dsh-native) で保守されています。生成された依存関係とローカルレビューセッションはコミットされません。
 
 ## データとプライバシー
 

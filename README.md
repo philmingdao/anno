@@ -13,7 +13,7 @@
 
 Anno is a local-first HTML review workspace for AI coding agents. It opens an isolated copy of a local HTML file in a browser, supports direct text and formatting edits, element comments, area annotations, and slide-aware review, then returns a durable handoff that an agent can claim and resolve into a verified standalone HTML file.
 
-The repository contains one shared MCP server and host-neutral skill, native plugin manifests where a host supports them, and copy-ready MCP templates for Cursor, Google Antigravity, Windsurf, GitHub Copilot, and Meta Muse Code. DeepSeek Harness and Muse Code support are experimental.
+The repository contains one shared MCP server and host-neutral skill, native plugin manifests where a host supports them, and copy-ready MCP templates for Cursor, Google Antigravity, Windsurf, GitHub Copilot, and Meta Muse Code. DeepSeek Harness support is maintained separately in [`philmingdao/anno-dsh-native`](https://github.com/philmingdao/anno-dsh-native), an in-process native plug-in built with DeepSeek Harness; Muse Code support remains experimental.
 
 ## Highlights
 
@@ -33,7 +33,7 @@ The repository contains one shared MCP server and host-neutral skill, native plu
 
 ## Supported agent tools
 
-Codex, Claude Code, WorkBuddy, and CodeBuddy use packaged plugin manifests. Cursor, Google Antigravity, Windsurf, GitHub Copilot CLI/Chat, and Muse Code connect to the same local stdio MCP server through host-specific configuration templates. DeepSeek Harness uses an experimental native bridge.
+Codex, Claude Code, WorkBuddy, and CodeBuddy use packaged plugin manifests. Cursor, Google Antigravity, Windsurf, GitHub Copilot CLI/Chat, and Muse Code connect to the same local stdio MCP server through host-specific configuration templates. DeepSeek Harness uses the independent native [`anno-dsh-native`](https://github.com/philmingdao/anno-dsh-native) repository, which integrates directly with the DSH profile, tool registry, and agent lifecycle without an MCP bridge.
 
 See [Agent tool integrations](docs/agent-tools.md) for copy-ready configuration and host limitations.
 
@@ -46,7 +46,7 @@ See [Agent tool integrations](docs/agent-tools.md) for copy-ready configuration 
 | Google Antigravity | Local stdio MCP | Supported |
 | Windsurf | Local stdio MCP | Supported |
 | GitHub Copilot CLI / Chat | Local stdio MCP | Supported locally |
-| DeepSeek Harness | Cordis-to-MCP bridge | Experimental |
+| DeepSeek Harness | Independent native DSH plug-in | Verified on 0.1.0-rc.6 |
 | Meta Muse Code | Local stdio MCP | Experimental |
 
 ## One-command install
@@ -71,6 +71,15 @@ Use the same command on macOS, Linux, and Windows. Node.js 22+ is the only share
 npx -y @philmingdao/anno@0.4.0 doctor --host cursor
 npx -y @philmingdao/anno@0.4.0 uninstall --host cursor
 ```
+
+DeepSeek Harness has a dedicated native implementation in a separate repository. Install the current source directly from GitHub:
+
+```bash
+dsh plugin --profile web add github:philmingdao/anno-dsh-native
+dsh web
+```
+
+See [`philmingdao/anno-dsh-native`](https://github.com/philmingdao/anno-dsh-native) for installation, architecture, compatibility, and source-checkout testing. That plug-in was developed and validated through DeepSeek Harness itself and is the maintained DeepSeek solution for Anno.
 
 Codex, Claude Code, WorkBuddy, and CodeBuddy are installed through their native plugin systems. Cursor receives a native plugin-compatible MCP/Skill layout; Antigravity receives a complete native plugin bundle; Windsurf receives MCP plus Skill configuration; and Copilot receives MCP plus Skill configuration. Muse Code requires the confirmed config path because its public configuration contract is not stable:
 
@@ -123,7 +132,7 @@ npm test
 npm run pack:check
 ```
 
-The publishable package lives in `plugins/anno`. Generated dependencies and local review sessions are not committed.
+The core MCP package lives in `plugins/anno`. The DeepSeek Harness implementation is maintained in the independent [`anno-dsh-native`](https://github.com/philmingdao/anno-dsh-native) repository. Generated dependencies and local review sessions are not committed.
 
 ## Data and privacy
 

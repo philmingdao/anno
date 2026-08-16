@@ -13,7 +13,7 @@
 
 Anno es un espacio de revisión HTML local para agentes de programación con IA. Abre en el navegador una copia aislada de un archivo HTML local y permite editar directamente el texto y el formato, añadir comentarios sobre elementos y anotaciones de área, y revisar presentaciones diapositiva por diapositiva. Al finalizar, crea una entrega persistente que un agente puede reclamar y convertir en un archivo HTML independiente y verificado.
 
-El repositorio incluye un servidor MCP compartido y un Skill independiente del anfitrión, manifiestos de complementos nativos cuando la plataforma los admite y plantillas MCP listas para copiar para Cursor, Google Antigravity, Windsurf, GitHub Copilot y Meta Muse Code. La compatibilidad con DeepSeek Harness y Muse Code es experimental.
+El repositorio incluye un servidor MCP compartido y un Skill independiente del anfitrión, manifiestos de complementos nativos cuando la plataforma los admite y plantillas MCP listas para copiar para Cursor, Google Antigravity, Windsurf, GitHub Copilot y Meta Muse Code. La integración con DeepSeek Harness se mantiene por separado en [`philmingdao/anno-dsh-native`](https://github.com/philmingdao/anno-dsh-native), un complemento nativo en proceso desarrollado con DeepSeek Harness. Muse Code sigue siendo experimental.
 
 ## Funciones destacadas
 
@@ -33,7 +33,7 @@ El repositorio incluye un servidor MCP compartido y un Skill independiente del a
 
 ## Herramientas de agente compatibles
 
-Codex, Claude Code, WorkBuddy y CodeBuddy usan manifiestos de complementos empaquetados. Cursor, Google Antigravity, Windsurf, GitHub Copilot CLI/Chat y Muse Code se conectan al mismo servidor MCP stdio local mediante plantillas específicas. DeepSeek Harness utiliza un puente nativo experimental.
+Codex, Claude Code, WorkBuddy y CodeBuddy usan manifiestos de complementos empaquetados. Cursor, Google Antigravity, Windsurf, GitHub Copilot CLI/Chat y Muse Code se conectan al mismo servidor MCP stdio local mediante plantillas específicas. DeepSeek Harness usa el repositorio nativo independiente [`anno-dsh-native`](https://github.com/philmingdao/anno-dsh-native), que se integra directamente con el perfil, el registro de herramientas y el ciclo de vida del agente de DSH, sin puente MCP.
 
 Consulta la [guía de integración con herramientas de agentes](docs/agent-tools.md) para obtener configuraciones listas para copiar y conocer las limitaciones de cada plataforma.
 
@@ -46,7 +46,7 @@ Consulta la [guía de integración con herramientas de agentes](docs/agent-tools
 | Google Antigravity | MCP stdio local | Compatible |
 | Windsurf | MCP stdio local | Compatible |
 | GitHub Copilot CLI / Chat | MCP stdio local | Compatible en local |
-| DeepSeek Harness | Puente Cordis-to-MCP | Experimental |
+| DeepSeek Harness | Complemento DSH nativo independiente | Verificado en 0.1.0-rc.6 |
 | Meta Muse Code | MCP stdio local | Experimental |
 
 ## Instalación con un solo comando
@@ -58,6 +58,15 @@ npx -y @philmingdao/anno@0.4.0 setup
 npx -y @philmingdao/anno@0.4.0 setup --host cursor,windsurf,copilot
 npx -y @philmingdao/anno@0.4.0 doctor --host cursor
 ```
+
+La implementación nativa para DeepSeek Harness se instala desde su repositorio independiente:
+
+```bash
+dsh plugin --profile web add github:philmingdao/anno-dsh-native
+dsh web
+```
+
+Consulta [`philmingdao/anno-dsh-native`](https://github.com/philmingdao/anno-dsh-native) para conocer la arquitectura, compatibilidad e instalación desde código fuente. El complemento fue desarrollado y validado con DeepSeek Harness.
 
 Codex, Claude Code, WorkBuddy y CodeBuddy usan sus complementos nativos; Antigravity recibe un paquete completo. Para Muse Code, indica la ruta de configuración confirmada: `npx -y @philmingdao/anno@0.4.0 setup --host muse --config /absolute/path/to/mcp.json`.
 
@@ -96,7 +105,7 @@ npm test
 npm run pack:check
 ```
 
-El paquete publicable se encuentra en `plugins/anno`. Las dependencias generadas y las sesiones locales de revisión no se incluyen en los commits.
+El paquete MCP principal se encuentra en `plugins/anno`; la implementación para DeepSeek Harness se mantiene en el repositorio independiente [`anno-dsh-native`](https://github.com/philmingdao/anno-dsh-native). Las dependencias generadas y las sesiones locales de revisión no se incluyen en los commits.
 
 ## Datos y privacidad
 

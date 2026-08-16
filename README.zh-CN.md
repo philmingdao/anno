@@ -13,7 +13,7 @@
 
 Anno 是一个面向 AI 编程 Agent 的、本地优先的 HTML 审阅工作台。它会在浏览器中打开本地 HTML 文件的隔离副本，支持直接编辑文本和格式、添加元素评注与区域评注，并能感知幻灯片页面。审阅完成后，Anno 会生成一份持久化的交接任务，由 Agent 接管并处理为经过验证的独立 HTML 文件。
 
-本仓库包含一套共享的 MCP 服务和与宿主无关的 Skill：为支持原生插件的宿主提供插件清单，并为 Cursor、Google Antigravity、Windsurf、GitHub Copilot 和 Meta Muse Code 提供可直接复制的 MCP 配置模板。DeepSeek Harness 与 Muse Code 支持目前属于实验性质。
+本仓库包含一套共享的 MCP 服务和与宿主无关的 Skill：为支持原生插件的宿主提供插件清单，并为 Cursor、Google Antigravity、Windsurf、GitHub Copilot 和 Meta Muse Code 提供可直接复制的 MCP 配置模板。DeepSeek Harness 支持由独立仓库 [`philmingdao/anno-dsh-native`](https://github.com/philmingdao/anno-dsh-native) 维护；它是一个使用 DeepSeek Harness 开发的进程内原生插件。Muse Code 支持仍属于实验性质。
 
 ## 主要特性
 
@@ -33,7 +33,7 @@ Anno 是一个面向 AI 编程 Agent 的、本地优先的 HTML 审阅工作台�
 
 ## 支持的 Agent 工具
 
-Codex、Claude Code、WorkBuddy 和 CodeBuddy 使用打包的插件清单。Cursor、Google Antigravity、Windsurf、GitHub Copilot CLI/Chat 和 Muse Code 通过各自的配置模板连接同一个本地 stdio MCP 服务。DeepSeek Harness 使用实验性的原生桥接。
+Codex、Claude Code、WorkBuddy 和 CodeBuddy 使用打包的插件清单。Cursor、Google Antigravity、Windsurf、GitHub Copilot CLI/Chat 和 Muse Code 通过各自的配置模板连接同一个本地 stdio MCP 服务。DeepSeek Harness 使用独立的原生 [`anno-dsh-native`](https://github.com/philmingdao/anno-dsh-native) 仓库，直接接入 DSH profile、工具注册表和 Agent 生命周期，不经过 MCP 桥接。
 
 可直接复制的配置和各宿主限制，请参阅 [Agent 工具集成说明](docs/agent-tools.md)。
 
@@ -46,7 +46,7 @@ Codex、Claude Code、WorkBuddy 和 CodeBuddy 使用打包的插件清单。Curs
 | Google Antigravity | 本地 stdio MCP | 支持 |
 | Windsurf | 本地 stdio MCP | 支持 |
 | GitHub Copilot CLI / Chat | 本地 stdio MCP | 支持本地运行 |
-| DeepSeek Harness | Cordis-to-MCP 桥接 | 实验性 |
+| DeepSeek Harness | 独立的 DSH 原生插件 | 已验证 0.1.0-rc.6 |
 | Meta Muse Code | 本地 stdio MCP | 实验性 |
 
 ## 一条命令安装
@@ -71,6 +71,15 @@ macOS、Linux 和 Windows 使用同一命令，共同前提只有 Node.js 22+。
 npx -y @philmingdao/anno@0.4.0 doctor --host cursor
 npx -y @philmingdao/anno@0.4.0 uninstall --host cursor
 ```
+
+DeepSeek Harness 使用独立仓库中的原生实现。当前可以直接从 GitHub 安装源码：
+
+```bash
+dsh plugin --profile web add github:philmingdao/anno-dsh-native
+dsh web
+```
+
+安装、架构、兼容性和源码测试方法请参阅 [`philmingdao/anno-dsh-native`](https://github.com/philmingdao/anno-dsh-native)。该插件本身通过 DeepSeek Harness 开发与验证，是 Anno 持续维护的 DeepSeek 解决方案。
 
 Codex、Claude Code、WorkBuddy 和 CodeBuddy 通过各自原生插件系统安装；Cursor 获得兼容原生插件的 MCP/Skill 结构；Antigravity 获得完整原生插件包；Windsurf 和 Copilot 获得 MCP 与 Skill 配置。Muse Code 的公开配置约定尚未稳定，因此必须先确认路径：
 
@@ -123,7 +132,7 @@ npm test
 npm run pack:check
 ```
 
-可发布的软件包位于 `plugins/anno`。生成的依赖文件和本地审阅会话不会提交到仓库。
+核心 MCP 软件包位于 `plugins/anno`。DeepSeek Harness 实现由独立仓库 [`anno-dsh-native`](https://github.com/philmingdao/anno-dsh-native) 维护。生成的依赖文件和本地审阅会话不会提交到仓库。
 
 ## 数据与隐私
 

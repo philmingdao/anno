@@ -13,7 +13,7 @@
 
 Anno ist ein lokal arbeitender HTML-Review-Arbeitsbereich für KI-Coding-Agenten. Er öffnet eine isolierte Kopie einer lokalen HTML-Datei im Browser und ermöglicht direkte Text- und Formatänderungen, Kommentare an Elementen, Bereichsanmerkungen sowie eine folienbezogene Prüfung. Nach Abschluss erstellt Anno eine dauerhafte Übergabe, die ein Agent übernehmen und in eine geprüfte, eigenständige HTML-Datei überführen kann.
 
-Das Repository enthält einen gemeinsamen MCP-Server und einen hostneutralen Skill, native Plugin-Manifeste für unterstützte Hosts sowie kopierfertige MCP-Vorlagen für Cursor, Google Antigravity, Windsurf, GitHub Copilot und Meta Muse Code. Die Unterstützung für DeepSeek Harness und Muse Code ist experimentell.
+Das Repository enthält einen gemeinsamen MCP-Server und einen hostneutralen Skill, native Plugin-Manifeste für unterstützte Hosts sowie kopierfertige MCP-Vorlagen für Cursor, Google Antigravity, Windsurf, GitHub Copilot und Meta Muse Code. Die DeepSeek-Harness-Unterstützung wird separat in [`philmingdao/anno-dsh-native`](https://github.com/philmingdao/anno-dsh-native) gepflegt, einem mit DeepSeek Harness entwickelten nativen In-Process-Plug-in. Muse Code bleibt experimentell.
 
 ## Highlights
 
@@ -33,7 +33,7 @@ Das Repository enthält einen gemeinsamen MCP-Server und einen hostneutralen Ski
 
 ## Unterstützte Agent-Tools
 
-Codex, Claude Code, WorkBuddy und CodeBuddy verwenden paketierte Plugin-Manifeste. Cursor, Google Antigravity, Windsurf, GitHub Copilot CLI/Chat und Muse Code verbinden sich über hostspezifische Vorlagen mit demselben lokalen stdio-MCP-Server. DeepSeek Harness verwendet eine experimentelle native Bridge.
+Codex, Claude Code, WorkBuddy und CodeBuddy verwenden paketierte Plugin-Manifeste. Cursor, Google Antigravity, Windsurf, GitHub Copilot CLI/Chat und Muse Code verbinden sich über hostspezifische Vorlagen mit demselben lokalen stdio-MCP-Server. DeepSeek Harness verwendet das unabhängige native Repository [`anno-dsh-native`](https://github.com/philmingdao/anno-dsh-native), das DSH-Profil, Tool-Registry und Agent-Lebenszyklus direkt und ohne MCP-Bridge integriert.
 
 Kopierfertige Konfigurationen und hostspezifische Einschränkungen finden Sie im [Integrationsleitfaden für Agent-Tools](docs/agent-tools.md).
 
@@ -46,7 +46,7 @@ Kopierfertige Konfigurationen und hostspezifische Einschränkungen finden Sie im
 | Google Antigravity | Lokales stdio-MCP | Unterstützt |
 | Windsurf | Lokales stdio-MCP | Unterstützt |
 | GitHub Copilot CLI / Chat | Lokales stdio-MCP | Lokal unterstützt |
-| DeepSeek Harness | Cordis-to-MCP-Bridge | Experimentell |
+| DeepSeek Harness | Unabhängiges natives DSH-Plug-in | Verifiziert mit 0.1.0-rc.6 |
 | Meta Muse Code | Lokales stdio-MCP | Experimentell |
 
 ## Installation mit einem Befehl
@@ -58,6 +58,15 @@ npx -y @philmingdao/anno@0.4.0 setup
 npx -y @philmingdao/anno@0.4.0 setup --host cursor,windsurf,copilot
 npx -y @philmingdao/anno@0.4.0 doctor --host cursor
 ```
+
+Die native DeepSeek-Harness-Implementierung wird aus dem unabhängigen Repository installiert:
+
+```bash
+dsh plugin --profile web add github:philmingdao/anno-dsh-native
+dsh web
+```
+
+Architektur, Kompatibilität und Quellinstallation finden Sie unter [`philmingdao/anno-dsh-native`](https://github.com/philmingdao/anno-dsh-native). Das Plug-in wurde mit DeepSeek Harness entwickelt und validiert.
 
 Codex, Claude Code, WorkBuddy und CodeBuddy verwenden ihre nativen Plugins; Antigravity erhält ein vollständiges Plugin-Bundle. Für Muse Code geben Sie den bestätigten Konfigurationspfad an: `npx -y @philmingdao/anno@0.4.0 setup --host muse --config /absolute/path/to/mcp.json`.
 
@@ -96,7 +105,7 @@ npm test
 npm run pack:check
 ```
 
-Das veröffentlichbare Paket befindet sich in `plugins/anno`. Generierte Abhängigkeiten und lokale Review-Sitzungen werden nicht committed.
+Das MCP-Kernpaket befindet sich in `plugins/anno`; die DeepSeek-Harness-Implementierung wird im unabhängigen Repository [`anno-dsh-native`](https://github.com/philmingdao/anno-dsh-native) gepflegt. Generierte Abhängigkeiten und lokale Review-Sitzungen werden nicht committed.
 
 ## Daten und Datenschutz
 
