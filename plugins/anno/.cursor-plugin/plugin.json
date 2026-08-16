@@ -1,0 +1,12 @@
+{
+  "name": "anno",
+  "displayName": "Anno",
+  "version": "0.4.0",
+  "description": "Open, edit, annotate, and hand off local HTML review sessions.",
+  "author": {
+    "name": "philmingdao"
+  },
+  "license": "MIT",
+  "keywords": ["html", "review", "annotation", "mcp", "agent"],
+  "logo": "assets/logo.svg"
+}

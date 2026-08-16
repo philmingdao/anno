@@ -49,38 +49,19 @@ Codex、Claude Code、WorkBuddy、CodeBuddy はパッケージ済みプラグイ
 | DeepSeek Harness | Cordis-to-MCP ブリッジ | 実験的 |
 | Meta Muse Code | ローカル stdio MCP | 実験的 |
 
-## Codex へのインストール
+## 1 コマンドでインストール
+
+クローンやビルドは不要です。インストーラーは利用可能なエージェントを検出し、既存の JSON/JSONC に `anno` だけを安全にマージし、Skill と MCP を設定して接続を検証します。
 
 ```bash
-codex plugin marketplace add philmingdao/anno --ref main
-codex plugin add anno@anno
+npx -y @philmingdao/anno@0.4.0 setup
+npx -y @philmingdao/anno@0.4.0 setup --host cursor,windsurf,copilot
+npx -y @philmingdao/anno@0.4.0 doctor --host cursor
 ```
 
-再現可能なインストールには、`main` を `v0.3.1` などのリリースタグに置き換えてください。
+Codex、Claude Code、WorkBuddy、CodeBuddy にはネイティブプラグインとして、Antigravity には完全なプラグインバンドルとして設定されます。Muse Code では確認済みの設定パスを指定してください：`npx -y @philmingdao/anno@0.4.0 setup --host muse --config /absolute/path/to/mcp.json`。
 
-## Claude Code へのインストール
-
-```text
-/plugin marketplace add philmingdao/anno
-/plugin install anno@anno
-```
-
-## WorkBuddy または CodeBuddy へのインストール
-
-`philmingdao/anno` をプラグイン marketplace として追加し、`anno` をインストールします。ローカル開発では、ホストのプラグインディレクトリオプションで `plugins/anno` を読み込めます。
-
-## Cursor、Antigravity、Windsurf、Copilot、Muse Code へのインストール
-
-これらのツールは同じローカル MCP サーバーを使用します。npm パッケージが公開されるまでは、最初に一度だけローカルサーバーを準備します。
-
-```bash
-git clone https://github.com/philmingdao/anno.git
-cd anno
-npm install
-npm run build
-```
-
-選択したテンプレート内の `/absolute/path/to/anno` を、クローンしたリポジトリの絶対パスに置き換え、次の場所へコピーまたはマージします。
+手動管理が必要な環境では、次の固定バージョンテンプレートを使用できます。
 
 | エージェントツール | テンプレート | 設定先 |
 | --- | --- | --- |
@@ -94,20 +75,18 @@ npm run build
 Copilot CLI は次のコマンドでも直接設定できます。
 
 ```bash
-copilot mcp add anno --env ANNO_HOST=copilot -- node /absolute/path/to/anno/plugins/anno/dist/index.js
+copilot mcp add anno --env ANNO_HOST=copilot -- npx -y @philmingdao/anno@0.4.0 mcp
 ```
 
 保存後、ホストを再起動するか MCP サーバー一覧を更新してください。GitHub のクラウド Coding Agent は Anno のループバック URL をユーザーのブラウザーへ公開できないため、Copilot はローカルで使用してください。Muse Code は公開 MCP 仕様が安定していないため、引き続き実験的サポートです。
 
 ## MCP サーバーを直接使用する
 
-npm パッケージ公開後は、任意の stdio MCP クライアントから次のように起動できます。
+任意の stdio MCP クライアントから次のように起動できます。
 
 ```bash
-npx -y @philmingdao/anno
+npx -y @philmingdao/anno@0.4.0 mcp
 ```
-
-公開までは、リポジトリをクローンして依存関係をインストール・ビルドし、MCP クライアントから `plugins/anno/dist/index.js` を指定してください。
 
 ## 開発
 

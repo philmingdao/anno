@@ -1,35 +1,77 @@
 # Agent tool integrations
 
-Anno is a local stdio MCP server. The editor always runs on loopback, so these integrations are intended for agents running on the same computer as the reviewed HTML file. Replace `/absolute/path/to/anno` in every template with the absolute path to this repository.
+Anno is a local stdio MCP server. Its review editor binds to loopback, so the agent must run on the same computer as the reviewed HTML file.
 
-All non-Codex integrations use the durable manual handoff: open the returned local URL, submit the review, then ask the current agent to call `html_review_get_session` and claim the pending handoff. They never launch another agent CLI.
+## Recommended installer
+
+The published package contains one cross-platform installer for all supported hosts:
+
+```bash
+npx -y @philmingdao/anno@0.4.0 setup
+```
+
+Without `--host`, an interactive terminal detects installed tools and offers a selection. Automation can pass a comma-separated list. The installer merges only `mcpServers.anno`, preserves JSONC comments, writes timestamped backups before changes, installs the shared Skill, and performs an MCP `initialize` plus `tools/list` check.
+
+```bash
+npx -y @philmingdao/anno@0.4.0 setup --host cursor,windsurf,copilot
+npx -y @philmingdao/anno@0.4.0 setup --host antigravity --scope project
+npx -y @philmingdao/anno@0.4.0 doctor --host cursor
+npx -y @philmingdao/anno@0.4.0 uninstall --host cursor
+```
+
+### Install behavior by host
+
+| Host | Installer behavior | Native alternative |
+| --- | --- | --- |
+| Codex | Registers/updates the `anno` marketplace and installs `anno@anno` | `codex plugin marketplace add philmingdao/anno --ref v0.4.0`, then `codex plugin add anno@anno` |
+| Claude Code | Registers/updates the marketplace and installs `anno@anno` | `/plugin marketplace add philmingdao/anno`, then `/plugin install anno@anno` |
+| WorkBuddy / CodeBuddy | Uses the host's plugin marketplace commands | Add `philmingdao/anno`, then install `anno@anno` |
+| Cursor | Merges MCP and installs the Skill; the repo also ships a native Cursor plugin | Install from Cursor Marketplace after listing acceptance |
+| Google Antigravity | Writes a complete native plugin bundle for CLI and IDE locations | `agy plugin install /path/to/host-plugins/antigravity` |
+| Windsurf | Merges Cascade MCP and installs the Skill | Use the version-pinned template below |
+| GitHub Copilot CLI | Merges MCP and installs the Skill | `copilot plugin install philmingdao/anno:plugins/anno` |
+| Muse Code | Requires a caller-confirmed `--config` path | Experimental; use the installed build's MCP manager |
+
+If Codex already has a different Anno plugin id, setup stops instead of replacing it. Review the conflict and rerun with `--force` only when the native marketplace installation should become active.
 
 ## Cursor
 
-Copy [`plugins/anno/integrations/cursor/mcp.json`](../plugins/anno/integrations/cursor/mcp.json) to `.cursor/mcp.json` in a project or merge it into `~/.cursor/mcp.json`. Cursor supports local stdio MCP servers in both the IDE and Cursor Agent CLI. See the [official Cursor MCP documentation](https://docs.cursor.com/context/model-context-protocol).
+The repository includes `.cursor-plugin/marketplace.json`, `plugins/anno/.cursor-plugin/plugin.json`, a native `mcp.json`, and the shared Skill. Until the marketplace listing is accepted, use `setup --host cursor`. The manual fallback is [`plugins/anno/integrations/cursor/mcp.json`](../plugins/anno/integrations/cursor/mcp.json). See [Cursor's official plugin template](https://github.com/cursor/plugin-template) and [MCP documentation](https://docs.cursor.com/context/model-context-protocol).
 
 ## Google Antigravity
 
-Copy [`plugins/anno/integrations/antigravity/mcp_config.json`](../plugins/anno/integrations/antigravity/mcp_config.json) to `.agents/mcp_config.json` in a workspace, or merge it into `~/.gemini/config/mcp_config.json`. Refresh the MCP server list after saving. See the [official Antigravity MCP documentation](https://antigravity.google/docs/mcp).
+`setup --host antigravity` installs a complete `plugin.json`, `mcp_config.json`, and Skill bundle in Antigravity CLI and IDE user locations. `--scope project` writes `.agents/plugins/anno`. The fallback is [`plugins/anno/integrations/antigravity/mcp_config.json`](../plugins/anno/integrations/antigravity/mcp_config.json). See [Antigravity Plugins & Skills](https://antigravity.google/docs/cli/plugins) and [MCP documentation](https://antigravity.google/docs/mcp).
 
 ## Windsurf
 
-Merge [`plugins/anno/integrations/windsurf/mcp_config.json`](../plugins/anno/integrations/windsurf/mcp_config.json) into `~/.codeium/windsurf/mcp_config.json`, then refresh Cascade's MCP list. Windsurf supports stdio, Streamable HTTP, and SSE; Anno uses stdio. See the [official Windsurf MCP documentation](https://docs.windsurf.com/windsurf/cascade/mcp).
+`setup --host windsurf` merges `~/.codeium/windsurf/mcp_config.json` and installs `~/.codeium/windsurf/skills/anno/SKILL.md`. Project scope uses `.windsurf`. The fallback is [`plugins/anno/integrations/windsurf/mcp_config.json`](../plugins/anno/integrations/windsurf/mcp_config.json). See [Windsurf MCP documentation](https://docs.windsurf.com/windsurf/cascade/mcp).
 
 ## GitHub Copilot
 
-For Copilot CLI, either merge [`plugins/anno/integrations/github-copilot/mcp-config.json`](../plugins/anno/integrations/github-copilot/mcp-config.json) into `~/.copilot/mcp-config.json` or run:
+Copilot CLI can install the entire plugin directly:
 
 ```bash
-copilot mcp add anno --env ANNO_HOST=copilot -- node /absolute/path/to/anno/plugins/anno/dist/index.js
+copilot plugin install philmingdao/anno:plugins/anno
 ```
 
-For Copilot Chat in VS Code, copy [`plugins/anno/integrations/github-copilot/vscode-mcp.json`](../plugins/anno/integrations/github-copilot/vscode-mcp.json) to `.vscode/mcp.json`. Anno is designed for local Copilot CLI and IDE sessions; GitHub's cloud coding agent cannot expose a loopback review URL to the user's browser. See GitHub's official documentation for [Copilot CLI](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/add-mcp-servers) and [Copilot Chat](https://docs.github.com/en/copilot/how-tos/provide-context/use-mcp-in-your-ide/extend-copilot-chat-with-mcp).
+Alternatively, `setup --host copilot` safely merges user or project configuration. Manual fallbacks are [`plugins/anno/integrations/github-copilot/mcp-config.json`](../plugins/anno/integrations/github-copilot/mcp-config.json) and [`plugins/anno/integrations/github-copilot/vscode-mcp.json`](../plugins/anno/integrations/github-copilot/vscode-mcp.json). See GitHub's [CLI plugin reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-plugin-reference) and [MCP documentation](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/add-mcp-servers).
+
+GitHub's cloud coding agent cannot expose Anno's loopback URL to the user's browser; use a local Copilot CLI or IDE session.
 
 ## Meta Muse Code
 
-Muse Code support is experimental because the product is in beta and a stable public MCP configuration reference was not available when this integration was prepared. [`plugins/anno/integrations/muse-code/mcp.json`](../plugins/anno/integrations/muse-code/mcp.json) uses the conventional `mcpServers` stdio format. If the installed Muse Code build does not discover it, configure the same command through its MCP manager when available. Anno itself does not depend on a Muse-specific API.
+Muse Code remains experimental because a stable public MCP configuration path is not documented. Confirm the path in the installed build, then run:
+
+```bash
+npx -y @philmingdao/anno@0.4.0 setup --host muse --config /absolute/path/to/mcp.json
+```
+
+The conventional fallback is [`plugins/anno/integrations/muse-code/mcp.json`](../plugins/anno/integrations/muse-code/mcp.json).
+
+## Generic MCP clients and registries
+
+Any stdio client can launch `npx -y @philmingdao/anno@0.4.0 mcp`. The package declares MCP Registry name `io.github.philmingdao/anno`, and `plugins/anno/server.json` describes the npm transport for publication to the official MCP Registry.
 
 ## Security and trust
 
-Review MCP configuration before enabling it. Anno needs local file access only for HTML files explicitly opened through its tools. It binds the editor to `127.0.0.1`, validates request origins, never overwrites the source file, and does not upload reviewed files.
+Review MCP configuration before enabling it. Anno accesses only HTML files explicitly opened through its tools, binds the editor to `127.0.0.1`, validates request origins, never overwrites the source file, and does not upload reviewed files.

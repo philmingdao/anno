@@ -49,38 +49,19 @@ Codex, Claude Code, WorkBuddy, CodeBuddy는 패키지된 플러그인 매니페�
 | DeepSeek Harness | Cordis-to-MCP 브리지 | 실험적 |
 | Meta Muse Code | 로컬 stdio MCP | 실험적 |
 
-## Codex에 설치
+## 한 번의 명령으로 설치
+
+저장소 복제나 빌드가 필요 없습니다. 설치 프로그램은 사용 가능한 에이전트를 감지하고, 기존 JSON/JSONC에 `anno` 항목만 안전하게 병합하며, Skill과 MCP를 설치한 뒤 연결을 검증합니다.
 
 ```bash
-codex plugin marketplace add philmingdao/anno --ref main
-codex plugin add anno@anno
+npx -y @philmingdao/anno@0.4.0 setup
+npx -y @philmingdao/anno@0.4.0 setup --host cursor,windsurf,copilot
+npx -y @philmingdao/anno@0.4.0 doctor --host cursor
 ```
 
-재현 가능한 설치를 위해 `main` 대신 `v0.3.1`과 같은 릴리스 태그를 사용하세요.
+Codex, Claude Code, WorkBuddy, CodeBuddy에는 네이티브 플러그인으로, Antigravity에는 완전한 플러그인 번들로 설치됩니다. Muse Code는 확인한 설정 경로를 지정하세요: `npx -y @philmingdao/anno@0.4.0 setup --host muse --config /absolute/path/to/mcp.json`.
 
-## Claude Code에 설치
-
-```text
-/plugin marketplace add philmingdao/anno
-/plugin install anno@anno
-```
-
-## WorkBuddy 또는 CodeBuddy에 설치
-
-`philmingdao/anno`를 플러그인 marketplace로 추가한 다음 `anno`를 설치하세요. 로컬 개발 중에는 호스트의 플러그인 디렉터리 옵션으로 `plugins/anno`를 로드할 수 있습니다.
-
-## Cursor, Antigravity, Windsurf, Copilot 또는 Muse Code에 설치
-
-이 도구들은 동일한 로컬 MCP 서버를 사용합니다. npm 패키지가 공개되기 전에는 로컬 서버를 한 번 준비하세요.
-
-```bash
-git clone https://github.com/philmingdao/anno.git
-cd anno
-npm install
-npm run build
-```
-
-선택한 템플릿의 `/absolute/path/to/anno`를 복제한 저장소의 절대 경로로 바꾸고 아래 위치에 복사하거나 병합하세요.
+수동 관리 환경에서는 아래의 버전 고정 템플릿을 사용할 수 있습니다.
 
 | 에이전트 도구 | 템플릿 | 설정 위치 |
 | --- | --- | --- |
@@ -94,20 +75,18 @@ npm run build
 Copilot CLI는 다음 명령으로 직접 설정할 수도 있습니다.
 
 ```bash
-copilot mcp add anno --env ANNO_HOST=copilot -- node /absolute/path/to/anno/plugins/anno/dist/index.js
+copilot mcp add anno --env ANNO_HOST=copilot -- npx -y @philmingdao/anno@0.4.0 mcp
 ```
 
 저장 후 호스트를 다시 시작하거나 MCP 서버 목록을 새로 고치세요. GitHub 클라우드 Coding Agent는 Anno의 루프백 검토 URL을 사용자 브라우저에 노출할 수 없으므로 Copilot은 로컬에서 사용해야 합니다. Muse Code는 공개 MCP 설정 규격이 아직 안정적이지 않아 실험적 지원으로 유지됩니다.
 
 ## MCP 서버 직접 사용
 
-npm 패키지가 게시된 후에는 모든 stdio MCP 클라이언트에서 다음과 같이 실행할 수 있습니다.
+모든 stdio MCP 클라이언트에서 다음과 같이 실행할 수 있습니다.
 
 ```bash
-npx -y @philmingdao/anno
+npx -y @philmingdao/anno@0.4.0 mcp
 ```
-
-게시 전에는 저장소를 복제하고 의존성을 설치한 뒤 빌드하여 MCP 클라이언트가 `plugins/anno/dist/index.js`를 가리키도록 설정하세요.
 
 ## 개발
 

@@ -9,9 +9,15 @@ const requiredFiles = [
   ".claude-plugin/plugin.json",
   ".codebuddy-plugin/plugin.json",
   ".workbuddy-plugin/plugin.json",
+  ".cursor-plugin/plugin.json",
   "LICENSE",
   "README.md",
+  "mcp.json",
   "package.json",
+  "server.json",
+  "host-plugins/antigravity/plugin.json",
+  "host-plugins/antigravity/mcp_config.json",
+  "host-plugins/antigravity/skills/review-html-artifacts/SKILL.md",
   "integrations/cursor/mcp.json",
   "integrations/antigravity/mcp_config.json",
   "integrations/windsurf/mcp_config.json",
@@ -27,7 +33,7 @@ await Promise.all(requiredFiles.map((path) => access(join(pluginRoot, path))));
 
 const packageJson = await readJson(join(pluginRoot, "package.json"));
 const manifests = await Promise.all(
-  [".codex-plugin", ".claude-plugin", ".codebuddy-plugin", ".workbuddy-plugin"].map(
+  [".codex-plugin", ".claude-plugin", ".codebuddy-plugin", ".workbuddy-plugin", ".cursor-plugin"].map(
     (directory) => readJson(join(pluginRoot, directory, "plugin.json")),
   ),
 );
@@ -44,6 +50,7 @@ for (const marketplacePath of [
   ".agents/plugins/marketplace.json",
   ".claude-plugin/marketplace.json",
   ".codebuddy-plugin/marketplace.json",
+  ".cursor-plugin/marketplace.json",
 ]) {
   const marketplace = await readJson(join(root, marketplacePath));
   const anno = marketplace.plugins?.find((plugin) => plugin.name === "anno");
@@ -55,9 +62,15 @@ for (const integrationPath of integrationPaths) {
   const config = await readJson(join(pluginRoot, integrationPath));
   const servers = config.mcpServers ?? config.servers;
   const anno = servers?.anno;
-  if (!anno || anno.command !== "node") throw new Error(`${integrationPath} does not define the Anno stdio server.`);
+  if (!anno || anno.command !== "npx") throw new Error(`${integrationPath} does not define the published Anno stdio server.`);
+  if (!anno.args?.includes("@philmingdao/anno@0.4.0")) throw new Error(`${integrationPath} does not pin Anno 0.4.0.`);
   if (!anno.env?.ANNO_HOST) throw new Error(`${integrationPath} does not select an Anno host.`);
 }
+
+const serverJson = await readJson(join(pluginRoot, "server.json"));
+if (serverJson.name !== packageJson.mcpName) throw new Error("server.json name must match package.json mcpName.");
+if (serverJson.version !== packageJson.version) throw new Error("server.json version must match package.json.");
+if (serverJson.packages?.[0]?.identifier !== packageJson.name) throw new Error("server.json must publish the Anno npm package.");
 
 const readmePaths = [
   "README.md",

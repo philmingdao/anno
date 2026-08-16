@@ -90,7 +90,7 @@
       },{passive:true});
       (async()=>{
         try{
-          await request('ui/initialize',{appInfo:{name:'Anno handoff',version:'0.3.1'},appCapabilities:{},protocolVersion:'2025-11-21'});
+          await request('ui/initialize',{appInfo:{name:'Anno handoff',version:'0.4.0'},appCapabilities:{},protocolVersion:'2025-11-21'});
           initialized=true;notify('ui/notifications/initialized');
         }catch{}
         acceptStart(window.openai?.toolOutput||window.openai?.toolResponseMetadata?.mcp_tool_result);

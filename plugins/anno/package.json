@@ -1,6 +1,7 @@
 {
   "name": "@philmingdao/anno",
-  "version": "0.3.1",
+  "version": "0.4.0",
+  "mcpName": "io.github.philmingdao/anno",
   "description": "A local-first HTML review editor and MCP server for AI coding agents.",
   "license": "MIT",
   "author": "philmingdao",
@@ -21,6 +22,7 @@
     "./package.json": "./package.json"
   },
   "bin": {
+    "anno": "dist/cli.js",
     "anno-mcp": "dist/index.js"
   },
   "files": [
@@ -28,11 +30,15 @@
     ".claude-plugin/",
     ".codebuddy-plugin/",
     ".workbuddy-plugin/",
+    ".cursor-plugin/",
     ".mcp.json",
+    "mcp.json",
     "assets/",
     "dist/",
     "integrations/",
+    "host-plugins/",
     "skills/",
+    "server.json",
     "LICENSE",
     "README.md"
   ],
@@ -47,11 +53,12 @@
     "node": ">=22"
   },
   "dependencies": {
+    "@modelcontextprotocol/client": "^2.0.0",
     "@modelcontextprotocol/server": "^2.0.0",
+    "jsonc-parser": "^3.3.1",
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@modelcontextprotocol/client": "^2.0.0",
     "@types/node": "^26.2.0",
     "typescript": "^7.0.2"
   }

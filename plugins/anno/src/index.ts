@@ -13,7 +13,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const SERVER_NAME = 'anno-mcp-server';
-const SERVER_VERSION = '0.3.1';
+const SERVER_VERSION = '0.4.0';
 const MAX_HTML_BYTES = 100 * 1024 * 1024;
 const MAX_JSON_BYTES = 2 * 1024 * 1024;
 const PLUGIN_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -927,3 +927,5 @@ const shutdown = (): void => {
 };
 process.once('SIGTERM', shutdown);
 process.once('SIGINT', shutdown);
+process.stdin.once('end', shutdown);
+process.stdin.once('close', shutdown);
