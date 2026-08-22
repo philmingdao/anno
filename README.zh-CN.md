@@ -25,6 +25,16 @@ Anno 是一个面向 AI 编程 Agent 的、本地优先的 HTML 审阅工作台�
 - 在支持的平台间共享同一套 MCP 和 `SKILL.md` 实现
 - 简体中文与英文界面，并支持浅色和深色主题
 
+## 界面截图
+
+审阅编辑器会在浏览器中打开 HTML 文件的隔离副本：直接编辑文本与样式、为任意元素添加评注或区域标注，然后一键把收集到的修改交接给 Agent。
+
+![审阅编辑器（浅色主题 · 修改标注页）](plugins/anno/assets/screenshots/anno-editor-light.png)
+
+![审阅编辑器（深色主题 · 编辑与格式面板）](plugins/anno/assets/screenshots/anno-editor-dark.png)
+
+![元素评注弹层](plugins/anno/assets/screenshots/anno-comment.png)
+
 ## 运行要求
 
 - Node.js 22 或更高版本

@@ -25,6 +25,16 @@ Anno は、AI コーディングエージェント向けのローカルファー
 - 対応ホスト間で共有される MCP と `SKILL.md`
 - 簡体字中国語と英語の UI、ライト／ダークテーマ
 
+## スクリーンショット
+
+レビューエディタは HTML ファイルの隔離コピーをブラウザで開きます。テキストやスタイルを直接編集し、要素や領域にコメントを残し、集めた変更をワンクリックでエージェントに引き継げます。
+
+![レビューエディタ（ライトテーマ・変更メモタブ）](plugins/anno/assets/screenshots/anno-editor-light.png)
+
+![レビューエディタ（ダークテーマ・編集とフォーマット）](plugins/anno/assets/screenshots/anno-editor-dark.png)
+
+![要素コメントのポップオーバー](plugins/anno/assets/screenshots/anno-comment.png)
+
 ## 動作要件
 
 - Node.js 22 以降

@@ -25,6 +25,16 @@ The repository contains one shared MCP server and host-neutral skill, native plu
 - Shared MCP and `SKILL.md` implementation across supported hosts
 - Simplified Chinese and English UI, light and dark themes
 
+## Screenshots
+
+The review editor opens an isolated copy of your HTML in the browser. Edit text and styles directly, leave element or area comments, and hand the collected changes back to the agent in one click.
+
+![Anno review editor, light theme, annotations tab](plugins/anno/assets/screenshots/anno-editor-light.png)
+
+![Anno review editor, dark theme, format controls](plugins/anno/assets/screenshots/anno-editor-dark.png)
+
+![Element comment popover](plugins/anno/assets/screenshots/anno-comment.png)
+
 ## Requirements
 
 - Node.js 22 or newer

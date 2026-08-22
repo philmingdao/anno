@@ -25,6 +25,16 @@ El repositorio incluye un servidor MCP compartido y un Skill independiente del a
 - Implementación compartida de MCP y `SKILL.md` entre plataformas compatibles
 - Interfaz en chino simplificado e inglés, con temas claro y oscuro
 
+## Capturas de pantalla
+
+El editor de revisión abre en el navegador una copia aislada de tu HTML. Edita texto y estilos directamente, deja comentarios en elementos o áreas y entrega los cambios recopilados al agente con un solo clic.
+
+![Editor de revisión de Anno, tema claro, pestaña de anotaciones](plugins/anno/assets/screenshots/anno-editor-light.png)
+
+![Editor de revisión de Anno, tema oscuro, controles de formato](plugins/anno/assets/screenshots/anno-editor-dark.png)
+
+![Ventana emergente de comentario de elemento](plugins/anno/assets/screenshots/anno-comment.png)
+
 ## Requisitos
 
 - Node.js 22 o posterior

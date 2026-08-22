@@ -25,6 +25,16 @@ Das Repository enthält einen gemeinsamen MCP-Server und einen hostneutralen Ski
 - Gemeinsame MCP- und `SKILL.md`-Implementierung für unterstützte Hosts
 - Benutzeroberfläche auf vereinfachtem Chinesisch und Englisch sowie helle und dunkle Designs
 
+## Screenshots
+
+Der Review-Editor öffnet eine isolierte Kopie Ihrer HTML-Datei im Browser. Bearbeiten Sie Text und Stile direkt, hinterlassen Sie Kommentare an Elementen oder Bereichen und übergeben Sie die gesammelten Änderungen mit einem Klick an den Agenten.
+
+![Anno-Review-Editor, helles Design, Registerkarte für Anmerkungen](plugins/anno/assets/screenshots/anno-editor-light.png)
+
+![Anno-Review-Editor, dunkles Design, Formatierungswerkzeuge](plugins/anno/assets/screenshots/anno-editor-dark.png)
+
+![Kommentar-Popover für Elemente](plugins/anno/assets/screenshots/anno-comment.png)
+
 ## Voraussetzungen
 
 - Node.js 22 oder neuer

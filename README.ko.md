@@ -25,6 +25,16 @@ Anno는 AI 코딩 에이전트를 위한 로컬 우선 HTML 검토 작업 공간
 - 지원 호스트가 공유하는 MCP 및 `SKILL.md` 구현
 - 중국어 간체 및 영어 UI, 라이트/다크 테마
 
+## 스크린샷
+
+검토 편집기는 브라우저에서 HTML의 격리된 복사본을 엽니다. 텍스트와 스타일을 직접 편집하고, 요소나 영역에 댓글을 남긴 뒤, 모아둔 변경 사항을 한 번의 클릭으로 에이전트에 넘겨줄 수 있습니다.
+
+![Anno 검토 편집기, 라이트 테마, 주석 탭](plugins/anno/assets/screenshots/anno-editor-light.png)
+
+![Anno 검토 편집기, 다크 테마, 서식 컨트롤](plugins/anno/assets/screenshots/anno-editor-dark.png)
+
+![요소 댓글 팝오버](plugins/anno/assets/screenshots/anno-comment.png)
+
 ## 요구 사항
 
 - Node.js 22 이상

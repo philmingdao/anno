@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- Added the native DeepSeek Harness plugin (`adapters/dsh-native`): an in-process HTML review, editing, and annotation workspace with the six `html_review_*` model tools, no MCP bridge.
+- Upgraded the DeepSeek Harness MCP bridge with a CLI entry point, bundled Anno skill and synchronized contract, package-level tests, and localized documentation.
+- Bound review sessions to the originating Codex thread and made review-item numbering deterministic.
+- Added three review editor screenshots and a screenshot showcase in all ten README languages, plus standalone HTML review examples.
+- Listed the DeepSeek Harness plugin in the awesome-dsh-plugin marketplace.
+
 ## 0.4.0 - 2026-08-16
 
 - Added `anno setup`, `anno doctor`, and `anno uninstall` with automatic host detection, JSONC-preserving merges, scoped backups, Skill installation, and MCP handshake verification.

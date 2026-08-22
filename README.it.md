@@ -25,6 +25,16 @@ Il repository contiene un server MCP condiviso e uno Skill indipendente dall’h
 - Implementazione condivisa di MCP e `SKILL.md` tra gli host supportati
 - Interfaccia in cinese semplificato e inglese, con temi chiaro e scuro
 
+## Schermate
+
+L'editor di revisione apre nel browser una copia isolata del tuo HTML. Modifica direttamente testo e stili, lascia commenti su elementi o aree e consegna le modifiche raccolte all'agente con un clic.
+
+![Editor di revisione Anno, tema chiaro, scheda annotazioni](plugins/anno/assets/screenshots/anno-editor-light.png)
+
+![Editor di revisione Anno, tema scuro, controlli di formattazione](plugins/anno/assets/screenshots/anno-editor-dark.png)
+
+![Popover del commento su un elemento](plugins/anno/assets/screenshots/anno-comment.png)
+
 ## Requisiti
 
 - Node.js 22 o versione successiva
