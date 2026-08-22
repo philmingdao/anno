@@ -59,6 +59,21 @@ function currentCodexThreadId(): string | undefined {
   return candidate && /^[0-9a-f-]{20,80}$/i.test(candidate) ? candidate : undefined;
 }
 
+function bindToCurrentCodexTarget(session: SessionRecord): boolean {
+  const threadId = currentCodexThreadId();
+  if (HOST !== 'codex' || !threadId) return false;
+  let changed = false;
+  if (session.host !== 'codex') {
+    session.host = 'codex';
+    session.codexThreadId = threadId;
+    changed = true;
+  } else if (!session.codexThreadId) {
+    session.codexThreadId = threadId;
+    changed = true;
+  }
+  return changed;
+}
+
 function fallbackDelayMs(): number {
   const parsed = Number(process.env.ANNO_HANDOFF_FALLBACK_MS ?? 45000);
   return Number.isFinite(parsed) ? Math.max(100, Math.min(parsed, 300000)) : 45000;
@@ -106,6 +121,8 @@ interface ReviewState {
   formatChanges: Record<string, Record<string, string>>;
   annotations: Annotation[];
   pageNotes: Record<string, string>;
+  changeSequence: Record<string, number>;
+  nextSequence: number;
   activePage: number;
   updatedAt: string;
 }
@@ -173,6 +190,8 @@ const emptyReview = (): ReviewState => ({
   formatChanges: {},
   annotations: [],
   pageNotes: {},
+  changeSequence: {},
+  nextSequence: 1,
   activePage: 1,
   updatedAt: new Date().toISOString()
 });
@@ -379,6 +398,8 @@ function parseReviewState(value: unknown): ReviewState {
     formatChanges: parsed.formatChanges,
     annotations: parsed.annotations,
     pageNotes: parsed.pageNotes,
+    changeSequence: parsed.changeSequence,
+    nextSequence: parsed.nextSequence,
     activePage: parsed.activePage,
     updatedAt: new Date().toISOString()
   };
@@ -408,6 +429,8 @@ const ReviewStateSchema = z.object({
   formatChanges: z.record(z.string(), z.record(z.string(), z.string().max(500))),
   annotations: z.array(AnnotationSchema).max(5000),
   pageNotes: z.record(z.string(), z.string().max(10000)),
+  changeSequence: z.record(z.string(), z.number().int().positive().max(1000000)).default({}),
+  nextSequence: z.number().int().positive().max(1000001).default(1),
   activePage: z.number().int().min(1).max(10000)
 }).strict();
 
@@ -486,6 +509,7 @@ async function prepareAgentHandoff(session: SessionRecord, html: string, review:
   session.generationError = undefined;
   session.generationStartedAt = new Date().toISOString();
   session.generationFinishedAt = undefined;
+  bindToCurrentCodexTarget(session);
   await saveSession(session);
   if ((session.host ?? HOST) === 'codex') scheduleDispatch(session.id, handoff.id, fallbackDelayMs());
   return { draftPath, requestPath };
@@ -516,9 +540,30 @@ function scheduleDispatch(sessionId: string, handoffId: string, delayMs: number)
   dispatchTimers.set(key, timer);
 }
 
+function clearScheduledDispatch(sessionId: string, handoffId: string): void {
+  const key = `${sessionId}:${handoffId}`;
+  const timer = dispatchTimers.get(key);
+  if (timer) clearTimeout(timer);
+  dispatchTimers.delete(key);
+}
+
+async function requestImmediateDispatch(sessionId: string, handoffId: string): Promise<{ session: SessionRecord; dispatchRequested: boolean }> {
+  const session = await loadSession(sessionId);
+  if (!session.handoff || session.handoff.id !== handoffId) throw new Error('Handoff id does not match the active generation request.');
+  if (['sent', 'claimed', 'resolved'].includes(session.handoff.status)) {
+    clearScheduledDispatch(sessionId, handoffId);
+    return { session, dispatchRequested: false };
+  }
+  if (bindToCurrentCodexTarget(session)) await saveSession(session);
+  const canDispatch = session.host === 'codex' && Boolean(session.codexThreadId);
+  if (!canDispatch) return { session, dispatchRequested: false };
+  scheduleDispatch(sessionId, handoffId, 100);
+  return { session, dispatchRequested: true };
+}
+
 async function dispatchViaCodexCli(sessionId: string, handoffId: string): Promise<void> {
   const session = await loadSession(sessionId);
-  if (!session.handoff || session.handoff.id !== handoffId || ['claimed', 'resolved'].includes(session.handoff.status)) return;
+  if (!session.handoff || session.handoff.id !== handoffId || ['sent', 'claimed', 'resolved'].includes(session.handoff.status)) return;
   const lockPath = path.join(sessionDirectory(sessionId), `handoff-${handoffId}.lock`);
   let lock;
   try {
@@ -541,7 +586,7 @@ async function dispatchViaCodexCli(sessionId: string, handoffId: string): Promis
   }
   try {
     const fresh = await loadSession(sessionId);
-    if (!fresh.handoff || fresh.handoff.id !== handoffId || ['claimed', 'resolved'].includes(fresh.handoff.status)) return;
+    if (!fresh.handoff || fresh.handoff.id !== handoffId || ['sent', 'claimed', 'resolved'].includes(fresh.handoff.status)) return;
     if (!fresh.codexThreadId) {
       fresh.handoff.status = 'retrying';
       fresh.handoff.lastError = '未捕获当前 Codex 任务标识；正在等待宿主桥接组件恢复。';
@@ -602,10 +647,9 @@ async function recoverPendingHandoffs(): Promise<void> {
     if (!entry.isDirectory()) continue;
     try {
       const session = await loadSession(entry.name);
-      let changed = false;
-      session.host ??= session.codexThreadId ? 'codex' : HOST;
-      if (!session.codexThreadId && currentCodexThreadId()) {
-        session.codexThreadId = currentCodexThreadId();
+      let changed = bindToCurrentCodexTarget(session);
+      if (!session.host) {
+        session.host = session.codexThreadId ? 'codex' : HOST;
         changed = true;
       }
       if (['needs_agent', 'needs_codex'].includes(session.status) && !session.handoff) {
@@ -624,6 +668,7 @@ async function recoverPendingHandoffs(): Promise<void> {
 async function markHandoffSent(sessionId: string, handoffId: string): Promise<SessionRecord> {
   const session = await loadSession(sessionId);
   if (!session.handoff || session.handoff.id !== handoffId) throw new Error('Handoff id does not match the active generation request.');
+  clearScheduledDispatch(sessionId, handoffId);
   if (!['claimed', 'resolved'].includes(session.handoff.status)) {
     session.handoff.status = 'sent';
     session.handoff.sentAt ||= new Date().toISOString();
@@ -638,6 +683,7 @@ async function markHandoffSent(sessionId: string, handoffId: string): Promise<Se
 async function claimHandoff(sessionId: string, handoffId: string): Promise<SessionRecord> {
   const session = await loadSession(sessionId);
   if (!session.handoff || session.handoff.id !== handoffId) throw new Error('Handoff id does not match the active generation request.');
+  clearScheduledDispatch(sessionId, handoffId);
   if (session.handoff.status !== 'resolved') {
     session.handoff.status = 'claimed';
     session.handoff.claimedAt ||= new Date().toISOString();
@@ -676,7 +722,7 @@ async function handleHttp(req: IncomingMessage, res: ServerResponse): Promise<vo
       await serveFile(res, session.sourceCopyPath, 'text/html; charset=utf-8');
       return;
     }
-    const apiMatch = requestUrl.pathname.match(/^\/api\/session\/([0-9a-f-]{36})(?:\/(save|finalize|generate|handoff-sent))?$/);
+    const apiMatch = requestUrl.pathname.match(/^\/api\/session\/([0-9a-f-]{36})(?:\/(save|finalize|generate|handoff-sent|handoff-dispatch))?$/);
     if (apiMatch?.[1]) {
       const session = await loadSession(apiMatch[1]);
       if (req.method === 'GET' && !apiMatch[2]) {
@@ -720,6 +766,17 @@ async function handleHttp(req: IncomingMessage, res: ServerResponse): Promise<vo
         if (typeof body.handoff_id !== 'string') throw new Error('handoff_id must be a string.');
         const updated = await markHandoffSent(session.id, body.handoff_id);
         json(res, 200, { ok: true, session: await publicSession(updated) });
+        return;
+      }
+      if (req.method === 'POST' && apiMatch[2] === 'handoff-dispatch') {
+        const body = JSON.parse((await readBody(req, MAX_JSON_BYTES)).toString('utf8')) as { handoff_id?: unknown };
+        if (typeof body.handoff_id !== 'string') throw new Error('handoff_id must be a string.');
+        const requested = await requestImmediateDispatch(session.id, body.handoff_id);
+        json(res, 202, {
+          ok: true,
+          dispatch_requested: requested.dispatchRequested,
+          session: await publicSession(await loadSession(session.id))
+        });
         return;
       }
     }
@@ -899,6 +956,7 @@ server.registerTool('html_review_register_final', {
     session.outputs.push(finalPath);
     session.status = 'resolved';
     if (session.handoff) {
+      clearScheduledDispatch(session.id, session.handoff.id);
       session.handoff.status = 'resolved';
       session.handoff.resolvedAt = new Date().toISOString();
       session.handoff.updatedAt = session.handoff.resolvedAt;

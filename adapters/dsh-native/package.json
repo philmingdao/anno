@@ -1,0 +1,36 @@
+{
+  "name": "@philmingdao/anno-dsh-native",
+  "version": "0.1.0",
+  "description": "Native DeepSeek Harness plugin for Anno: an in-process HTML review, editing, and annotation server plus html_review_* model tools, without the MCP bridge.",
+  "license": "MIT",
+  "author": "philmingdao",
+  "homepage": "https://github.com/philmingdao/anno/tree/main/adapters/dsh-native#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/philmingdao/anno.git",
+    "directory": "adapters/dsh-native"
+  },
+  "bugs": "https://github.com/philmingdao/anno/issues",
+  "keywords": ["deepseek", "deepseek-harness", "dsh", "dsh-plugin", "html", "annotation", "cordis"],
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./anno-core": "./lib/anno-core.js",
+    "./package.json": "./package.json"
+  },
+  "files": ["lib/", "assets/", "cordis.patch.yml", "README.md", "LICENSE"],
+  "scripts": {
+    "test": "node --test test/*.test.mjs"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "compatibility": ">=0.1.0-rc.6 <0.2.0"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {}
+}

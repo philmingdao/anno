@@ -75,7 +75,15 @@ test('starts a Cursor review session and exposes a portable host-neutral handoff
     assert.match(editor, /localSpans=/);
     assert.match(editor, /suppressLinkActivation/);
     assert.match(editor, /a\[href\].*:has\(\[data-review-key\]\)/);
-    assert.match(editor, /function syncAreaMarkerVisibility\(\)/);
+    assert.match(editor, /function syncReviewMarkerVisibility\(\)/);
+    assert.match(editor, /function renderChangeMarkers\(\)/);
+    assert.match(editor, /function orderedReviewItems\(\)/);
+    assert.match(editor, /markerPopover\.className='anno-review-ui anno-marker-popover'/);
+    assert.match(editor, /event\.ctrlKey\|\|event\.metaKey/);
+    assert.match(editor, /event\.key!=='Enter'/);
+    assert.match(editor, /changeSequence:review\.changeSequence\|\|\{\}/);
+    assert.match(editor, /api\('\/handoff-dispatch'/);
+    assert.match(editor, /function restoreHandoffStatus\(session\)/);
     assert.match(editor, /function setupPageTracking\(\)/);
     assert.match(editor, /IntersectionObserver/);
     assert.match(editor, /marker\.dataset\.annotationPage/);
@@ -118,7 +126,10 @@ test('starts a Cursor review session and exposes a portable host-neutral handoff
             id: 'area-test', key: 'area-test', page: 1, originalText: 'Hello', currentText: 'Hello', note: 'Make this clearer', resolved: false,
             createdAt: new Date().toISOString(), kind: 'area', targetKeys: ['p1-e1'], rect: { x: 10, y: 20, width: 100, height: 60 }
           }],
-          pageNotes: {}, activePage: 1
+          pageNotes: {},
+          changeSequence: { 'edit:p1-e2': 1, 'annotation:area-test': 2 },
+          nextSequence: 3,
+          activePage: 1
         }
       })
     });
@@ -138,6 +149,8 @@ test('starts a Cursor review session and exposes a portable host-neutral handoff
     assert.equal(handedOff.structuredContent.session.status, 'needs_agent');
     assert.equal(handedOff.structuredContent.session.draft_html_path, generation.draft_html_path);
     assert.equal(handedOff.structuredContent.review.annotations[0].resolved, false);
+    assert.equal(handedOff.structuredContent.review.changeSequence['annotation:area-test'], 2);
+    assert.equal(handedOff.structuredContent.review.nextSequence, 3);
     const sent = await client.callTool({ name: 'html_review_mark_handoff_sent', arguments: { session_id: details.session_id, handoff_id: generation.session.handoff.id } });
     assert.equal(sent.structuredContent.status, 'sent');
     const claimed = await client.callTool({ name: 'html_review_claim_handoff', arguments: { session_id: details.session_id, handoff_id: generation.session.handoff.id } });
@@ -162,7 +175,7 @@ test('falls back to the captured Codex task when no widget sends the handoff', a
   const env = Object.fromEntries(Object.entries(process.env).filter(([, value]) => typeof value === 'string'));
   env.HTML_REVIEW_STUDIO_HOME = path.join(root, 'state');
   env.CODEX_THREAD_ID = '11111111-1111-4111-8111-111111111111';
-  env.ANNO_HANDOFF_FALLBACK_MS = '100';
+  env.ANNO_HANDOFF_FALLBACK_MS = '300';
   env.ANNO_CODEX_EXECUTABLE = process.execPath;
   env.ANNO_CODEX_EXECUTABLE_ARGS = JSON.stringify([fakeCodex]);
   env.ANNO_FAKE_LOG = log;
@@ -180,6 +193,13 @@ test('falls back to the captured Codex task when no widget sends the handoff', a
       body: JSON.stringify({ html: '<!doctype html><html><body><p>Hello</p></body></html>', review: { edits: {}, formatChanges: {}, annotations: [], pageNotes: { '1': 'Tighten copy' }, activePage: 1 } })
     });
     assert.equal(response.status, 202);
+    const generation = await response.json();
+    const dispatchResponse = await fetch(`${base}/api/session/${started.structuredContent.session_id}/handoff-dispatch`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Review-Token': token },
+      body: JSON.stringify({ handoff_id: generation.session.handoff.id })
+    });
+    assert.equal(dispatchResponse.status, 202);
+    assert.equal((await dispatchResponse.json()).dispatch_requested, true);
     let state;
     for (let attempt = 0; attempt < 50; attempt++) {
       await new Promise(resolve => setTimeout(resolve, 50));
@@ -191,6 +211,23 @@ test('falls back to the captured Codex task when no widget sends the handoff', a
     const args = JSON.parse(await readFile(log, 'utf8'));
     assert.deepEqual(args.slice(0, 4), ['exec', 'resume', '--skip-git-repo-check', env.CODEX_THREAD_ID]);
     assert.match(args[4], /html_review_claim_handoff/);
+
+    const firstDispatchLog = await readFile(log, 'utf8');
+    const secondResponse = await fetch(`${base}/api/session/${started.structuredContent.session_id}/generate`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Review-Token': token },
+      body: JSON.stringify({ html: '<!doctype html><html><body><p>Hello again</p></body></html>', review: { edits: {}, formatChanges: {}, annotations: [], pageNotes: { '1': 'Second pass' }, activePage: 1 } })
+    });
+    const secondGeneration = await secondResponse.json();
+    const markSentResponse = await fetch(`${base}/api/session/${started.structuredContent.session_id}/handoff-sent`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Review-Token': token },
+      body: JSON.stringify({ handoff_id: secondGeneration.session.handoff.id })
+    });
+    assert.equal(markSentResponse.status, 200);
+    await new Promise(resolve => setTimeout(resolve, 450));
+    const secondState = (await client.callTool({ name: 'html_review_get_session', arguments: { session_id: started.structuredContent.session_id } })).structuredContent.session;
+    assert.equal(secondState.handoff.status, 'sent');
+    assert.equal(secondState.handoff.attempts, 0);
+    assert.equal(await readFile(log, 'utf8'), firstDispatchLog);
   } finally {
     await client.close();
   }
@@ -206,7 +243,12 @@ test('recovers an undelivered handoff after the MCP server restarts', async () =
   await writeFile(fakeCodex, `#!/usr/bin/env node\nimport { writeFileSync } from 'node:fs';\nwriteFileSync(process.env.ANNO_FAKE_LOG, JSON.stringify(process.argv.slice(2)));\n`, 'utf8');
   await chmod(fakeCodex, 0o755);
   const baseEnv = Object.fromEntries(Object.entries(process.env).filter(([, value]) => typeof value === 'string'));
-  Object.assign(baseEnv, { HTML_REVIEW_STUDIO_HOME: stateRoot, CODEX_THREAD_ID: '22222222-2222-4222-8222-222222222222', ANNO_DISABLE_CODEX_FALLBACK: '1' });
+  Object.assign(baseEnv, {
+    HTML_REVIEW_STUDIO_HOME: stateRoot,
+    CODEX_THREAD_ID: '22222222-2222-4222-8222-222222222222',
+    ANNO_HOST: 'generic',
+    ANNO_DISABLE_CODEX_FALLBACK: '1'
+  });
   const firstTransport = new StdioClientTransport({ command: process.execPath, args: [path.resolve('dist/index.js')], cwd: process.cwd(), env: baseEnv, stderr: 'pipe' });
   const firstClient = new Client({ name: 'anno-before-restart', version: '1.0.0' });
   let sessionId;
@@ -222,6 +264,7 @@ test('recovers an undelivered handoff after the MCP server restarts', async () =
 
   const recoveryEnv = {
     ...baseEnv,
+    ANNO_HOST: 'codex',
     ANNO_HANDOFF_FALLBACK_MS: '100',
     ANNO_CODEX_EXECUTABLE: process.execPath,
     ANNO_CODEX_EXECUTABLE_ARGS: JSON.stringify([fakeCodex]),
@@ -240,6 +283,8 @@ test('recovers an undelivered handoff after the MCP server restarts', async () =
     }
     assert.equal(session.handoff.status, 'sent');
     assert.equal(session.handoff.attempts, 1);
+    assert.equal(session.handoff.host, 'codex');
+    assert.equal(session.handoff.has_host_target, true);
     assert.match((await readFile(log, 'utf8')), new RegExp(sessionId));
   } finally { await recoveryClient.close(); }
 });

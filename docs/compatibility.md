@@ -13,7 +13,7 @@ Anno separates its local editor and MCP session protocol from host-specific deli
 | GitHub Copilot CLI / Chat | Native CLI plugin or local stdio MCP | Installed as a Skill | Host-dependent | Durable manual resume |
 | Meta Muse Code | Experimental through local stdio MCP | Skill can be reused | Not verified | Durable manual resume |
 | Generic MCP client | Supported | Optional | Not required | Manual resume |
-| DeepSeek Harness | Experimental native bridge | Skill can be reused | Local URL only | Durable manual resume |
+| DeepSeek Harness 0.1.0-rc.6 | Independent native `anno-dsh-native` plug-in | Native DSH prompt/tool integration | Local URL only | In-process `agent.followup` + durable resume |
 
 ## Portable contract
 
@@ -29,4 +29,4 @@ Set `ANNO_DATA_DIR` to an absolute or user-relative storage location resolved by
 
 ## Configuration templates
 
-The recommended path is `npx -y @philmingdao/anno@0.4.0 setup`; it safely merges host configuration, installs the shared Skill, and verifies the MCP handshake. Version-pinned templates and host-specific limitations are documented in [Agent tool integrations](agent-tools.md).
+The recommended path is `npx -y @philmingdao/anno@0.4.0 setup`; it safely merges host configuration, installs the shared Skill, and verifies the MCP handshake. DeepSeek Harness uses the independent native [`anno-dsh-native`](https://github.com/philmingdao/anno-dsh-native) repository because DSH plug-ins are ordered profile bundles rather than generic MCP config entries. Version-pinned templates and host-specific limitations are documented in [Agent tool integrations](agent-tools.md).

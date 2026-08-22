@@ -13,7 +13,7 @@
 
 Anno คือพื้นที่ทำงานสำหรับตรวจทาน HTML แบบ local-first สำหรับเอเจนต์เขียนโค้ด AI โดยจะเปิดสำเนาแยกของไฟล์ HTML ภายในเครื่องผ่านเบราว์เซอร์ รองรับการแก้ไขข้อความและรูปแบบโดยตรง การเพิ่มความคิดเห็นให้กับองค์ประกอบ การทำคำอธิบายประกอบแบบกำหนดพื้นที่ และการตรวจทานตามสไลด์ เมื่อเสร็จสิ้น Anno จะสร้าง handoff แบบถาวรเพื่อให้เอเจนต์รับช่วงต่อและสร้างไฟล์ HTML แบบ standalone ที่ผ่านการตรวจสอบแล้ว
 
-รีโพซิทอรีนี้ประกอบด้วยเซิร์ฟเวอร์ MCP ที่ใช้ร่วมกันและ Skill ที่ไม่ผูกกับโฮสต์, manifest ปลั๊กอินแบบเนทีฟสำหรับโฮสต์ที่รองรับ และเทมเพลต MCP ที่คัดลอกไปใช้ได้ทันทีสำหรับ Cursor, Google Antigravity, Windsurf, GitHub Copilot และ Meta Muse Code การรองรับ DeepSeek Harness และ Muse Code ยังอยู่ในขั้นทดลอง
+รีโพซิทอรีนี้ประกอบด้วยเซิร์ฟเวอร์ MCP ที่ใช้ร่วมกันและ Skill ที่ไม่ผูกกับโฮสต์, manifest ปลั๊กอินแบบเนทีฟสำหรับโฮสต์ที่รองรับ และเทมเพลต MCP ที่คัดลอกไปใช้ได้ทันทีสำหรับ Cursor, Google Antigravity, Windsurf, GitHub Copilot และ Meta Muse Code ส่วน DeepSeek Harness ดูแลแยกใน [`philmingdao/anno-dsh-native`](https://github.com/philmingdao/anno-dsh-native) ซึ่งเป็นปลั๊กอินเนทีฟแบบ in-process ที่พัฒนาด้วย DeepSeek Harness ขณะที่ Muse Code ยังอยู่ในขั้นทดลอง
 
 ## คุณสมบัติเด่น
 
@@ -25,6 +25,16 @@ Anno คือพื้นที่ทำงานสำหรับตรวจ
 - ใช้ MCP และ `SKILL.md` ชุดเดียวกันในโฮสต์ที่รองรับ
 - UI ภาษาจีนตัวย่อและภาษาอังกฤษ พร้อมธีมสว่างและมืด
 
+## ภาพหน้าจอ
+
+ตัวแก้ไขการตรวจทานจะเปิดสำเนาแยกของ HTML ของคุณในเบราว์เซอร์ แก้ไขข้อความและสไตล์ได้โดยตรง แสดงความคิดเห็นบนองค์ประกอบหรือพื้นที่ แล้วส่งมอบการเปลี่ยนแปลงที่รวบรวมไว้ให้เอเจนต์ด้วยคลิกเดียว
+
+![ตัวแก้ไขการตรวจทาน Anno ธีมสว่าง แท็บคำอธิบายประกอบ](plugins/anno/assets/screenshots/anno-editor-light.png)
+
+![ตัวแก้ไขการตรวจทาน Anno ธีมมืด แถบควบคุมการจัดรูปแบบ](plugins/anno/assets/screenshots/anno-editor-dark.png)
+
+![ป๊อปโอเวอร์ความคิดเห็นขององค์ประกอบ](plugins/anno/assets/screenshots/anno-comment.png)
+
 ## ความต้องการของระบบ
 
 - Node.js 22 ขึ้นไป
@@ -33,7 +43,7 @@ Anno คือพื้นที่ทำงานสำหรับตรวจ
 
 ## เครื่องมือเอเจนต์ที่รองรับ
 
-Codex, Claude Code, WorkBuddy และ CodeBuddy ใช้ manifest ปลั๊กอินที่บรรจุมาให้ ส่วน Cursor, Google Antigravity, Windsurf, GitHub Copilot CLI/Chat และ Muse Code เชื่อมต่อกับเซิร์ฟเวอร์ MCP แบบ stdio ภายในเครื่องตัวเดียวกันผ่านเทมเพลตเฉพาะโฮสต์ DeepSeek Harness ใช้บริดจ์แบบเนทีฟที่ยังอยู่ในขั้นทดลอง
+Codex, Claude Code, WorkBuddy และ CodeBuddy ใช้ manifest ปลั๊กอินที่บรรจุมาให้ ส่วน Cursor, Google Antigravity, Windsurf, GitHub Copilot CLI/Chat และ Muse Code เชื่อมต่อกับเซิร์ฟเวอร์ MCP แบบ stdio ภายในเครื่องตัวเดียวกันผ่านเทมเพลตเฉพาะโฮสต์ DeepSeek Harness ใช้รีโพซิทอรีเนทีฟอิสระ [`anno-dsh-native`](https://github.com/philmingdao/anno-dsh-native) ซึ่งเชื่อมตรงกับ profile, tool registry และวงจรชีวิตเอเจนต์ของ DSH โดยไม่ผ่าน MCP bridge
 
 ดูการตั้งค่าที่คัดลอกไปใช้ได้ทันทีและข้อจำกัดของแต่ละโฮสต์ได้ใน [คู่มือการเชื่อมต่อเครื่องมือเอเจนต์](docs/agent-tools.md)
 
@@ -46,7 +56,7 @@ Codex, Claude Code, WorkBuddy และ CodeBuddy ใช้ manifest ปลั�
 | Google Antigravity | MCP แบบ stdio ภายในเครื่อง | รองรับ |
 | Windsurf | MCP แบบ stdio ภายในเครื่อง | รองรับ |
 | GitHub Copilot CLI / Chat | MCP แบบ stdio ภายในเครื่อง | รองรับการใช้งานภายในเครื่อง |
-| DeepSeek Harness | บริดจ์ Cordis-to-MCP | ทดลอง |
+| DeepSeek Harness | ปลั๊กอิน DSH เนทีฟแบบอิสระ | ตรวจสอบแล้วบน 0.1.0-rc.6 |
 | Meta Muse Code | MCP แบบ stdio ภายในเครื่อง | ทดลอง |
 
 ## ติดตั้งด้วยคำสั่งเดียว
@@ -58,6 +68,15 @@ npx -y @philmingdao/anno@0.4.0 setup
 npx -y @philmingdao/anno@0.4.0 setup --host cursor,windsurf,copilot
 npx -y @philmingdao/anno@0.4.0 doctor --host cursor
 ```
+
+การติดตั้งเนทีฟสำหรับ DeepSeek Harness ทำจากรีโพซิทอรีอิสระ:
+
+```bash
+dsh plugin --profile web add github:philmingdao/anno-dsh-native
+dsh web
+```
+
+ดูสถาปัตยกรรม ความเข้ากันได้ และการติดตั้งจากซอร์สได้ที่ [`philmingdao/anno-dsh-native`](https://github.com/philmingdao/anno-dsh-native) ปลั๊กอินนี้พัฒนาและตรวจสอบด้วย DeepSeek Harness
 
 Codex, Claude Code, WorkBuddy และ CodeBuddy ใช้ปลั๊กอินแบบเนทีฟ ส่วน Antigravity จะได้รับชุดปลั๊กอินครบถ้วน สำหรับ Muse Code ให้ระบุพาธการตั้งค่าที่ตรวจสอบแล้ว: `npx -y @philmingdao/anno@0.4.0 setup --host muse --config /absolute/path/to/mcp.json`
 
@@ -96,7 +115,7 @@ npm test
 npm run pack:check
 ```
 
-แพ็กเกจที่พร้อมเผยแพร่อยู่ใน `plugins/anno` โดยจะไม่ commit dependencies ที่สร้างขึ้นและเซสชันตรวจทานภายในเครื่อง
+แพ็กเกจ MCP หลักอยู่ใน `plugins/anno` ส่วนการรองรับ DeepSeek Harness ดูแลในรีโพซิทอรีอิสระ [`anno-dsh-native`](https://github.com/philmingdao/anno-dsh-native) โดยจะไม่ commit dependencies ที่สร้างขึ้นและเซสชันตรวจทานภายในเครื่อง
 
 ## ข้อมูลและความเป็นส่วนตัว
 

@@ -13,7 +13,7 @@
 
 Anno è uno spazio di revisione HTML locale per agenti di programmazione IA. Apre nel browser una copia isolata di un file HTML locale e consente di modificare direttamente testo e formattazione, aggiungere commenti agli elementi e annotazioni di area e rivedere le presentazioni diapositiva per diapositiva. Al termine crea un passaggio di consegne persistente che un agente può prendere in carico e trasformare in un file HTML autonomo e verificato.
 
-Il repository contiene un server MCP condiviso e uno Skill indipendente dall’host, manifest di plug-in nativi per gli host che li supportano e modelli MCP pronti da copiare per Cursor, Google Antigravity, Windsurf, GitHub Copilot e Meta Muse Code. Il supporto per DeepSeek Harness e Muse Code è sperimentale.
+Il repository contiene un server MCP condiviso e uno Skill indipendente dall’host, manifest di plug-in nativi per gli host che li supportano e modelli MCP pronti da copiare per Cursor, Google Antigravity, Windsurf, GitHub Copilot e Meta Muse Code. L’integrazione DeepSeek Harness è mantenuta separatamente in [`philmingdao/anno-dsh-native`](https://github.com/philmingdao/anno-dsh-native), un plug-in nativo in-process sviluppato con DeepSeek Harness. Muse Code resta sperimentale.
 
 ## Funzionalità principali
 
@@ -25,6 +25,16 @@ Il repository contiene un server MCP condiviso e uno Skill indipendente dall’h
 - Implementazione condivisa di MCP e `SKILL.md` tra gli host supportati
 - Interfaccia in cinese semplificato e inglese, con temi chiaro e scuro
 
+## Schermate
+
+L'editor di revisione apre nel browser una copia isolata del tuo HTML. Modifica direttamente testo e stili, lascia commenti su elementi o aree e consegna le modifiche raccolte all'agente con un clic.
+
+![Editor di revisione Anno, tema chiaro, scheda annotazioni](plugins/anno/assets/screenshots/anno-editor-light.png)
+
+![Editor di revisione Anno, tema scuro, controlli di formattazione](plugins/anno/assets/screenshots/anno-editor-dark.png)
+
+![Popover del commento su un elemento](plugins/anno/assets/screenshots/anno-comment.png)
+
 ## Requisiti
 
 - Node.js 22 o versione successiva
@@ -33,7 +43,7 @@ Il repository contiene un server MCP condiviso e uno Skill indipendente dall’h
 
 ## Strumenti agent supportati
 
-Codex, Claude Code, WorkBuddy e CodeBuddy usano manifest di plug-in inclusi nel pacchetto. Cursor, Google Antigravity, Windsurf, GitHub Copilot CLI/Chat e Muse Code si collegano allo stesso server MCP stdio locale tramite modelli specifici per host. DeepSeek Harness usa un bridge nativo sperimentale.
+Codex, Claude Code, WorkBuddy e CodeBuddy usano manifest di plug-in inclusi nel pacchetto. Cursor, Google Antigravity, Windsurf, GitHub Copilot CLI/Chat e Muse Code si collegano allo stesso server MCP stdio locale tramite modelli specifici per host. DeepSeek Harness usa il repository nativo indipendente [`anno-dsh-native`](https://github.com/philmingdao/anno-dsh-native), integrato direttamente con profilo, registro strumenti e ciclo di vita degli agent DSH, senza bridge MCP.
 
 Consulta la [guida alle integrazioni degli strumenti agent](docs/agent-tools.md) per le configurazioni pronte da copiare e i limiti di ogni host.
 
@@ -46,7 +56,7 @@ Consulta la [guida alle integrazioni degli strumenti agent](docs/agent-tools.md)
 | Google Antigravity | MCP stdio locale | Supportato |
 | Windsurf | MCP stdio locale | Supportato |
 | GitHub Copilot CLI / Chat | MCP stdio locale | Supportato in locale |
-| DeepSeek Harness | Bridge Cordis-to-MCP | Sperimentale |
+| DeepSeek Harness | Plug-in DSH nativo indipendente | Verificato su 0.1.0-rc.6 |
 | Meta Muse Code | MCP stdio locale | Sperimentale |
 
 ## Installazione con un solo comando
@@ -58,6 +68,15 @@ npx -y @philmingdao/anno@0.4.0 setup
 npx -y @philmingdao/anno@0.4.0 setup --host cursor,windsurf,copilot
 npx -y @philmingdao/anno@0.4.0 doctor --host cursor
 ```
+
+L’implementazione nativa per DeepSeek Harness si installa dal repository indipendente:
+
+```bash
+dsh plugin --profile web add github:philmingdao/anno-dsh-native
+dsh web
+```
+
+Consulta [`philmingdao/anno-dsh-native`](https://github.com/philmingdao/anno-dsh-native) per architettura, compatibilità e installazione dai sorgenti. Il plug-in è stato sviluppato e verificato con DeepSeek Harness.
 
 Codex, Claude Code, WorkBuddy e CodeBuddy usano i plug-in nativi; Antigravity riceve un bundle completo. Per Muse Code indica il percorso di configurazione confermato: `npx -y @philmingdao/anno@0.4.0 setup --host muse --config /absolute/path/to/mcp.json`.
 
@@ -96,7 +115,7 @@ npm test
 npm run pack:check
 ```
 
-Il pacchetto pubblicabile si trova in `plugins/anno`. Le dipendenze generate e le sessioni di revisione locali non vengono incluse nei commit.
+Il pacchetto MCP principale si trova in `plugins/anno`; l’implementazione DeepSeek Harness è mantenuta nel repository indipendente [`anno-dsh-native`](https://github.com/philmingdao/anno-dsh-native). Le dipendenze generate e le sessioni di revisione locali non vengono incluse nei commit.
 
 ## Dati e privacy
 
