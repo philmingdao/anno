@@ -1,0 +1,18 @@
+# Anno for DeepSeek Harness — native plugin row.
+#
+# Unlike `@philmingdao/anno-dsh` (which bridges the MCP server through the
+# official DSH MCP client), this bundle inserts the in-process plugin directly:
+# it runs the local HTML review server, persists review sessions on disk, and
+# registers the `html_review_*` model tools with no MCP layer.
+#
+# The plugin provides no Cordis service (the HTTP server and on-disk store are
+# fiber-owned side effects), so the row sits safely in the profile (host) plane,
+# giving every agent the same tools and one shared review-session store.
+
+- insert:
+    - id: anno-native
+      name: '@philmingdao/anno-dsh-native'
+      config:
+        host: dsh
+        # dataDir: /absolute/path  # defaults to $ANNO_DATA_DIR or ~/.anno
+        # assetsDir: /absolute/path # defaults to the package's bundled assets
