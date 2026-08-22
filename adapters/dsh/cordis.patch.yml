@@ -1,3 +1,20 @@
+# Anno for DeepSeek Harness. The official DSH MCP client owns discovery,
+# stable tool names, cancellation, HMR, and bounded reconnect behavior.
 - insert:
-    - id: anno
-      name: '@philmingdao/anno-dsh'
+    - id: mcp-anno
+      name: '@deepseek-ai/dsh-mcp-client'
+      config:
+        serverName: anno
+        transport: stdio
+        command: npx
+        args: ['-y', '--package=@philmingdao/anno@0.4.0', 'anno', 'mcp']
+        env:
+          ANNO_HOST: dsh
+          ANNO_DISABLE_CODEX_FALLBACK: '1'
+        toolCallTimeoutMs: 60000
+        failOnStartupError: true
+        reconnect:
+          enabled: true
+          initialDelayMs: 500
+          maxDelayMs: 30000
+          maxAttempts: 10

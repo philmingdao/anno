@@ -1,32 +1,50 @@
 {
   "name": "@philmingdao/anno-dsh",
-  "version": "0.4.0-experimental.1",
-  "description": "Experimental native DeepSeek Harness bridge for the Anno MCP server.",
+  "version": "0.1.0",
+  "description": "Native DeepSeek Harness bundle for Anno HTML review and annotation.",
   "license": "MIT",
   "author": "philmingdao",
-  "homepage": "https://github.com/philmingdao/anno/tree/main/adapters/dsh",
-  "repository": {"type": "git", "url": "git+https://github.com/philmingdao/anno.git", "directory": "adapters/dsh"},
-  "private": true,
+  "homepage": "https://github.com/philmingdao/anno/tree/main/adapters/dsh#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/philmingdao/anno.git",
+    "directory": "adapters/dsh"
+  },
+  "bugs": "https://github.com/philmingdao/anno/issues",
+  "keywords": ["deepseek", "deepseek-harness", "dsh", "dsh-plugin", "mcp", "html", "annotation"],
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "files": ["dist/", "cordis.patch.yml", "README.md", "LICENSE"],
-  "scripts": {
-    "build": "tsc",
-    "test": "npm run build && node --test test/*.test.mjs"
+  "exports": {
+    ".": "./dist/index.js",
+    "./package.json": "./package.json"
   },
-  "dsh": {"bundle": {"patch": "./cordis.patch.yml"}},
+  "bin": {
+    "anno-dsh": "dist/cli.js"
+  },
+  "files": ["dist/", "cordis.patch.yml", "skills/", "README.md", "README.zh-CN.md", "LICENSE"],
+  "scripts": {
+    "sync:skill": "node scripts/sync-skill.mjs",
+    "build": "npm run sync:skill && tsc",
+    "test": "npm run build && node --test test/*.test.mjs",
+    "pack:check": "npm pack --dry-run",
+    "prepublishOnly": "npm test"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "compatibility": ">=0.1.0-rc.6 <0.2.0"
+  },
+  "engines": {
+    "node": ">=22"
+  },
   "dependencies": {
     "@modelcontextprotocol/client": "^2.0.0",
-    "@philmingdao/anno": "0.4.0"
-  },
-  "peerDependencies": {
-    "@deepseek-ai/cordis": "*",
-    "@deepseek-ai/dsh-tools": "*"
+    "@philmingdao/anno": "0.4.0",
+    "pnpm": "^10.14.0"
   },
   "devDependencies": {
-    "@deepseek-ai/cordis": "^4.0.1",
-    "@deepseek-ai/dsh-tools": "0.0.1-rc.1",
     "@types/node": "^26.2.0",
     "typescript": "^7.0.2"
   }

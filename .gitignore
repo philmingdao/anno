@@ -1,6 +1,7 @@
 node_modules/
 *.tgz
 *.log
+npm_recovery_codes.txt
 .DS_Store
 .env
 .env.*

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Review HTML artifacts"
+  short_description: "Preview, edit, annotate, and generate final HTML files"
+  default_prompt: "Use $review-html-artifacts to open this HTML for editing and annotation, then generate the final file."
