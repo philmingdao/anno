@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>云栖咖啡 · 门店菜单</title>
+  <style>
+    :root {
+      --bg: #fbf7f1;
+      --paper: #ffffff;
+      --ink: #2d2418;
+      --muted: #8a7a64;
+      --brand: #a9743f;
+      --brand-dark: #7c5226;
+      --line: #ece2d3;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.65;
+    }
+    .topbar {
+      background: var(--paper);
+      border-bottom: 1px solid var(--line);
+      padding: 18px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .topbar h1 { margin: 0; font-size: 22px; letter-spacing: 1px; }
+    .topbar .tag { color: var(--brand); font-size: 13px; }
+    .wrap { max-width: 860px; margin: 0 auto; padding: 32px 20px 72px; }
+    .menu-title { font-size: 20px; margin: 8px 0 20px; color: var(--brand-dark); }
+    .items { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 14px; }
+    .item {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 18px 20px;
+    }
+    .item h3 { margin: 0 0 4px; font-size: 16px; }
+    .item .desc { margin: 0 0 10px; color: var(--muted); font-size: 13px; }
+    .item .price { color: var(--brand-dark); font-weight: 700; font-size: 15px; }
+    .note {
+      margin-top: 24px;
+      padding: 14px 18px;
+      background: #f3ece0;
+      border-radius: 10px;
+      font-size: 13px;
+      color: #5c4a30;
+    }
+    footer { text-align: center; color: var(--muted); font-size: 12px; padding: 20px; }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <h1 style="font-size: 49px;">云栖咖啡</h1>
+    <span class="tag">· 门店菜单 ·</span>
+  </header>
+
+  <main class="wrap">
+    <h2 class="menu-title">手冲精选</h2>
+    <div class="items">
+      <div class="item">
+        <h3>耶加雪菲 · 水洗</h3>
+        <p class="desc">茉莉花香，柑橘与佛手柑尾韵，明亮干净。</p>
+        <span class="price">¥38</span>
+      </div>
+      <div class="item">
+        <h3 style="font-size: 19px;">瑰夏 · 日晒</h3>
+        <p class="desc">热带水果与花香交织，层次丰富，甜感绵长。</p>
+        <span class="price">¥68</span>
+      </div>
+      <div class="item">
+        <h3>曼特宁 · 湿刨</h3>
+        <p class="desc">草本与黑巧克力，醇厚浓郁，回甘持久。</p>
+        <span class="price">¥32</span>
+      </div>
+    </div>
+
+    <h2 class="menu-title">特调饮品</h2>
+    <div class="items">
+      <div class="item">
+        <h3>燕麦拿铁</h3>
+        <p class="desc">醇香浓缩与燕麦奶融合，柔和顺滑。</p>
+        <span class="price">¥30</span>
+      </div>
+      <div class="item">
+        <h3>冷萃气泡</h3>
+        <p class="desc">低温冷萃遇上细腻气泡，清爽解腻。</p>
+        <span class="price">¥28</span>
+      </div>
+      <div class="item">
+        <h3>桂花乌龙茶拿铁</h3>
+        <p class="desc">桂花蜜香与乌龙茶底，清新回甘。</p>
+        <span class="price">¥33</span>
+      </div>
+    </div>
+
+    <div class="note">所有咖啡豆均为当季直采，可备注冰/热、甜度与奶类替换。</div>
+  </main>
+
+  <footer>云栖咖啡 · 上午 8:00 – 晚上 22:00</footer>
+
+
+</body></html>

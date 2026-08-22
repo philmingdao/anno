@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>经营总览 · 衡云 Hengyun</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Instrument+Sans:wght@400;500;600&family=Noto+Serif+SC:wght@500;600;700&family=Noto+Sans+SC:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --paper: #f6f3ec;
+    --paper-2: #fcfaf5;
+    --ink: #201d18;
+    --ink-2: #4a453c;
+    --muted: #8c8578;
+    --faint: #b4ac9c;
+    --line: #e5decf;
+    --line-strong: #d6cdba;
+
+    --accent: #1f6b52;
+    --accent-strong: #17513f;
+    --accent-soft: #e3ede7;
+
+    --red: #b5493a;
+    --red-soft: #f4e6e1;
+    --amber: #b07a26;
+    --amber-soft: #f4ead8;
+
+    --sidebar: #211e19;
+    --sidebar-2: #29251f;
+    --sidebar-line: #38332a;
+    --sidebar-text: #ece6d8;
+    --sidebar-muted: #948c7a;
+
+    --font-display: "Fraunces", "Noto Serif SC", serif;
+    --font-body: "Instrument Sans", "Noto Sans SC", sans-serif;
+    --font-serif: "Noto Serif SC", "Fraunces", serif;
+
+    --shadow: 0 1px 2px rgba(32, 29, 24, 0.04), 0 8px 24px -18px rgba(32, 29, 24, 0.18);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body { height: 100%; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* ---------- layout ---------- */
+  .shell { display: flex; min-height: 100vh; }
+
+  .sidebar {
+    width: 236px;
+    flex: 0 0 236px;
+    background: var(--sidebar);
+    color: var(--sidebar-text);
+    display: flex;
+    flex-direction: column;
+    padding: 22px 16px 18px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+  }
+
+  .app { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+
+  .content {
+    flex: 1;
+    padding: 28px 36px 48px;
+    max-width: 1500px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  /* ---------- sidebar ---------- */
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 2px 8px 22px;
+    border-bottom: 1px solid var(--sidebar-line);
+  }
+  .brand-mark {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    background: var(--accent);
+    display: grid; place-items: center;
+    color: #f2f5ee;
+    flex: 0 0 30px;
+  }
+  .brand-name { font-family: var(--font-serif); font-weight: 600; font-size: 16px; letter-spacing: 0.5px; }
+  .brand-sub { font-size: 11px; color: var(--sidebar-muted); letter-spacing: 1.5px; text-transform: uppercase; }
+
+  .nav { margin-top: 18px; display: flex; flex-direction: column; gap: 2px; flex: 1; }
+  .nav-label {
+    font-size: 10.5px; letter-spacing: 1.8px; text-transform: uppercase;
+    color: var(--sidebar-muted); padding: 10px 12px 6px;
+  }
+  .nav-item {
+    display: flex; align-items: center; gap: 11px;
+    padding: 9px 12px; border-radius: 8px;
+    color: var(--sidebar-muted);
+    text-decoration: none; font-size: 13.5px; font-weight: 500;
+    transition: background .16s ease, color .16s ease;
+  }
+  .nav-item svg { flex: 0 0 18px; opacity: .8; }
+  .nav-item:hover { color: var(--sidebar-text); background: var(--sidebar-2); }
+  .nav-item.active { color: var(--sidebar-text); background: var(--sidebar-2); }
+  .nav-item.active svg { color: #6fbf98; opacity: 1; }
+  .nav-item.active::before {
+    content: ""; position: absolute; left: 0; width: 3px; height: 18px;
+    background: var(--accent); border-radius: 0 3px 3px 0;
+  }
+  .nav-item { position: relative; }
+  .nav-item .badge {
+    margin-left: auto; font-size: 10.5px; font-weight: 600;
+    background: rgba(111,191,152,.16); color: #7ec7a3;
+    padding: 1px 7px; border-radius: 20px;
+  }
+
+  .sidebar-foot {
+    border-top: 1px solid var(--sidebar-line);
+    padding-top: 14px;
+    display: flex; align-items: center; gap: 11px;
+  }
+  .avatar {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: #4a4030; color: #e8e0cf;
+    display: grid; place-items: center;
+    font-family: var(--font-serif); font-size: 14px; font-weight: 600;
+    flex: 0 0 34px;
+  }
+  .side-user-name { font-size: 13.5px; font-weight: 500; }
+  .side-user-role { font-size: 11.5px; color: var(--sidebar-muted); }
+
+  /* ---------- topbar ---------- */
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 36px; border-bottom: 1px solid var(--line);
+    position: sticky; top: 0; background: rgba(246,243,236,.9);
+    backdrop-filter: blur(10px); z-index: 20;
+  }
+  .page-title { font-family: var(--font-serif); font-weight: 600; font-size: 21px; letter-spacing: 1px; }
+  .page-sub { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+  .page-sub b { color: var(--ink-2); font-weight: 600; }
+
+  .topbar-right { display: flex; align-items: center; gap: 14px; }
+  .seg { display: flex; background: #ece7db; border-radius: 9px; padding: 3px; }
+  .seg button {
+    border: none; background: transparent; font-family: var(--font-body);
+    font-size: 12.5px; font-weight: 500; color: var(--muted);
+    padding: 6px 14px; border-radius: 7px; cursor: pointer;
+    transition: all .16s ease;
+  }
+  .seg button:hover { color: var(--ink); }
+  .seg button.on { background: var(--paper-2); color: var(--ink); box-shadow: 0 1px 3px rgba(32,29,24,.08); }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    border: 1px solid var(--line-strong); background: var(--paper-2);
+    color: var(--ink); font-family: var(--font-body); font-size: 13px; font-weight: 500;
+    padding: 8px 15px; border-radius: 9px; cursor: pointer; transition: all .16s ease;
+  }
+  .btn:hover { border-color: var(--ink-2); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #f1f5ee; }
+  .btn.primary:hover { background: var(--accent-strong); border-color: var(--accent-strong); }
+
+  /* ---------- sections / panels ---------- */
+  .kpis {
+    display: grid; grid-template-columns: repeat(5, 1fr);
+    border: 1px solid var(--line); border-radius: 12px;
+    background: var(--paper-2); box-shadow: var(--shadow);
+    overflow: hidden; margin-bottom: 22px;
+  }
+  .kpi {
+    padding: 20px 22px 18px;
+    position: relative;
+  }
+  .kpi + .kpi { border-left: 1px solid var(--line); }
+  .kpi-label {
+    font-size: 11.5px; color: var(--muted); letter-spacing: 0.4px;
+    display: flex; align-items: center; gap: 6px; margin-bottom: 8px;
+  }
+  .kpi-label .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+  .kpi-value {
+    font-family: var(--font-display); font-weight: 600; font-size: 30px;
+    letter-spacing: -0.5px; font-variant-numeric: tabular-nums; line-height: 1.05;
+  }
+  .kpi-value .unit { font-size: 15px; font-weight: 500; color: var(--ink-2); margin-left: 2px; }
+  .kpi-foot { display: flex; align-items: center; gap: 6px; margin-top: 10px; font-size: 12px; color: var(--muted); }
+  .delta {
+    display: inline-flex; align-items: center; gap: 3px;
+    font-weight: 600; font-size: 12px; padding: 2px 7px; border-radius: 6px;
+    font-variant-numeric: tabular-nums;
+  }
+  .delta.up { color: var(--accent-strong); background: var(--accent-soft); }
+  .delta.down { color: var(--red); background: var(--red-soft); }
+  .delta.good { color: var(--accent-strong); background: var(--accent-soft); }
+  .delta svg { width: 11px; height: 11px; }
+
+  .grid {
+    display: grid; grid-template-columns: repeat(12, 1fr); gap: 22px;
+  }
+  .panel {
+    border: 1px solid var(--line); border-radius: 12px;
+    background: var(--paper-2); box-shadow: var(--shadow);
+    padding: 20px 22px 20px; display: flex; flex-direction: column;
+  }
+  .panel-head { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px; }
+  .panel-title { font-family: var(--font-serif); font-weight: 600; font-size: 16.5px; letter-spacing: 0.4px; }
+  .panel-sub { font-size: 12px; color: var(--muted); margin-top: 3px; }
+  .legend { display: flex; align-items: center; gap: 16px; font-size: 12px; color: var(--muted); }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-swatch { width: 9px; height: 9px; border-radius: 3px; }
+
+  .span-8 { grid-column: span 8; }
+  .span-4 { grid-column: span 4; }
+  .span-6 { grid-column: span 6; }
+  .span-7 { grid-column: span 7; }
+  .span-5 { grid-column: span 5; }
+
+  /* ---------- charts ---------- */
+  .chart-wrap { position: relative; flex: 1; min-height: 240px; }
+  .chart-wrap svg { display: block; width: 100%; }
+  .chart-tip {
+    position: absolute; pointer-events: none; z-index: 10;
+    background: var(--ink); color: #f3efe6; border-radius: 8px;
+    padding: 8px 11px; font-size: 12px; line-height: 1.35;
+    opacity: 0; transform: translate(-50%, calc(-100% - 12px));
+    transition: opacity .12s ease; white-space: nowrap;
+    box-shadow: 0 6px 20px -6px rgba(0,0,0,.4);
+  }
+  .chart-tip.show { opacity: 1; }
+  .chart-tip .t-val { font-family: var(--font-display); font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .chart-tip .t-lbl { color: #b9b2a2; font-size: 11px; margin-top: 1px; }
+  .axis-text { fill: var(--faint); font-size: 11px; font-family: var(--font-body); }
+  .grid-line { stroke: var(--line); stroke-width: 1; }
+
+  /* donut */
+  .donut-row { display: flex; align-items: center; gap: 22px; flex: 1; }
+  .donut-box { position: relative; flex: 0 0 auto; width: 176px; height: 176px; }
+  .donut-center { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; }
+  .donut-center .dc-val { font-family: var(--font-display); font-weight: 600; font-size: 26px; letter-spacing: -0.5px; }
+  .donut-center .dc-lbl { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .donut-legend { flex: 1; display: flex; flex-direction: column; gap: 11px; }
+  .dl-item { display: flex; align-items: center; gap: 9px; font-size: 13px; }
+  .dl-dot { width: 9px; height: 9px; border-radius: 3px; flex: 0 0 9px; }
+  .dl-name { color: var(--ink-2); }
+  .dl-val { margin-left: auto; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .dl-pct { color: var(--muted); font-size: 12px; width: 38px; text-align: right; font-variant-numeric: tabular-nums; }
+
+  /* channel bars */
+  .channels { display: flex; flex-direction: column; gap: 14px; flex: 1; justify-content: center; }
+  .channel-row { display: grid; grid-template-columns: 92px 1fr 64px; align-items: center; gap: 14px; }
+  .channel-name { font-size: 13px; color: var(--ink-2); }
+  .channel-track { height: 10px; background: #efe9dc; border-radius: 5px; overflow: hidden; }
+  .channel-fill { height: 100%; background: var(--accent); border-radius: 5px; width: 0; transition: width .9s cubic-bezier(.2,.7,.2,1); }
+  .channel-pct { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--ink); }
+
+  /* ---------- table ---------- */
+  .table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .table thead th {
+    text-align: left; font-weight: 500; font-size: 11px; letter-spacing: 1px;
+    text-transform: uppercase; color: var(--muted);
+    padding: 0 12px 10px; border-bottom: 1px solid var(--line-strong);
+  }
+  .table tbody td { padding: 12px; border-bottom: 1px solid var(--line); }
+  .table tbody tr:last-child td { border-bottom: none; }
+  .table tbody tr:hover td { background: #faf7f0; }
+  .table .num { text-align: right; font-variant-numeric: tabular-nums; }
+  .cell-company { display: flex; align-items: center; gap: 10px; font-weight: 500; }
+  .cell-company .avatar { width: 28px; height: 28px; flex: 0 0 28px; font-size: 12px; }
+  .cell-plan { color: var(--muted); font-size: 12px; }
+  .cell-mrr { font-family: var(--font-display); font-weight: 600; font-size: 14px; }
+  .pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 11.5px; font-weight: 500; padding: 3px 9px; border-radius: 20px;
+  }
+  .pill .p-dot { width: 5px; height: 5px; border-radius: 50%; }
+  .pill.ok { color: var(--accent-strong); background: var(--accent-soft); } .pill.ok .p-dot { background: var(--accent); }
+  .pill.warn { color: #8a5d1c; background: var(--amber-soft); } .pill.warn .p-dot { background: var(--amber); }
+  .pill.risk { color: var(--red); background: var(--red-soft); } .pill.risk .p-dot { background: var(--red); }
+
+  /* top customers list */
+  .cust-list { display: flex; flex-direction: column; flex: 1; }
+  .cust-row {
+    display: flex; align-items: center; gap: 12px; padding: 12px 4px;
+    border-bottom: 1px solid var(--line);
+  }
+  .cust-row:last-child { border-bottom: none; }
+  .cust-rank {
+    width: 20px; flex: 0 0 20px; text-align: center;
+    font-family: var(--font-display); font-size: 14px; color: var(--faint); font-weight: 600;
+  }
+  .cust-name { font-weight: 500; font-size: 13.5px; }
+  .cust-plan { font-size: 11.5px; color: var(--muted); }
+  .cust-right { margin-left: auto; text-align: right; }
+  .cust-mrr { font-family: var(--font-display); font-weight: 600; font-size: 15px; font-variant-numeric: tabular-nums; }
+  .cust-delta { font-size: 11.5px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .cust-delta.up { color: var(--accent); } .cust-delta.down { color: var(--red); }
+
+  /* ---------- reveal ---------- */
+  @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  .kpis, .grid > .panel { animation: rise .55s cubic-bezier(.2,.7,.2,1) both; }
+  .grid > .panel:nth-child(1) { animation-delay: .05s; }
+  .grid > .panel:nth-child(2) { animation-delay: .12s; }
+  .grid > .panel:nth-child(3) { animation-delay: .19s; }
+  .grid > .panel:nth-child(4) { animation-delay: .26s; }
+  .grid > .panel:nth-child(5) { animation-delay: .33s; }
+  .grid > .panel:nth-child(6) { animation-delay: .40s; }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 1100px) {
+    .kpis { grid-template-columns: repeat(2, 1fr); }
+    .kpi:nth-child(3) { border-left: none; }
+    .kpi:nth-child(n+4) { border-top: 1px solid var(--line); }
+    .span-8, .span-4, .span-6, .span-7, .span-5 { grid-column: span 12; }
+  }
+  @media (max-width: 860px) {
+    .sidebar { display: none; }
+    .topbar { padding: 14px 20px; }
+    .content { padding: 20px; }
+    .seg { display: none; }
+  }
+  @media (max-width: 560px) {
+    .kpis { grid-template-columns: 1fr; }
+    .kpi + .kpi { border-left: none; border-top: 1px solid var(--line); }
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ===== sidebar ===== -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 19 L4 5 M4 5 L12 5 M12 5 L12 12 M12 12 L20 12 M20 12 L20 19"/>
+        </svg>
+      </div>
+      <div>
+        <div class="brand-name">衡云</div>
+        <div class="brand-sub">Hengyun</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <div class="nav-label">经营</div>
+      <a class="nav-item active" href="#">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.5"/></svg>
+        经营总览
+      </a>
+      <a class="nav-item" href="#">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V10 M9.5 19V5 M15 19V13 M20.5 19V8"/></svg>
+        收入分析
+      </a>
+      <a class="nav-item" href="#">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c0-3 2.5-4.8 5.5-4.8s5.5 1.8 5.5 4.8"/><circle cx="17" cy="9" r="2.3"/><path d="M16.5 14.6c2.4.3 4 1.9 4 4"/></svg>
+        客户分析
+      </a>
+      <a class="nav-item" href="#">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 7l8 4 8-4-8-4Z"/><path d="M4 12l8 4 8-4"/><path d="M4 17l8 4 8-4"/></svg>
+        订阅管理
+        <span class="badge">3</span>
+      </a>
+
+      <div class="nav-label" style="margin-top:10px">增长</div>
+      <a class="nav-item" href="#">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z" opacity="0"/><path d="M4 4v16h16"/><path d="M9 9l6 6 M15 9l-6 6"/><path d="M6 15h12l-4-4h-4l-4 4Z"/></svg>
+        渠道归因
+      </a>
+      <a class="nav-item" href="#">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2Z"/><path d="M9 8h6 M9 12h6"/></svg>
+        财务对账
+      </a>
+      <a class="nav-item" href="#">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 8h10 M4 12h10 M4 16h10"/><circle cx="17.5" cy="8" r="1.6"/><circle cx="17.5" cy="12" r="1.6"/><circle cx="17.5" cy="16" r="1.6"/></svg>
+        系统设置
+      </a>
+    </nav>
+
+    <div class="sidebar-foot">
+      <div class="avatar">林</div>
+      <div>
+        <div class="side-user-name">林晚</div>
+        <div class="side-user-role">财务负责人</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ===== main ===== -->
+  <div class="app">
+    <header class="topbar">
+      <div>
+        <div class="page-title">经营总览</div>
+        <div class="page-sub"><b>2024 年 12 月</b> · 数据更新于 09:42 · 时区 UTC+8</div>
+      </div>
+      <div class="topbar-right">
+        <div class="seg">
+          <button>近 30 天</button>
+          <button class="on">本季度</button>
+          <button>本年</button>
+        </div>
+        <button class="btn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12 M7 10l5 5 5-5"/><path d="M4 19h16"/></svg>
+          导出报告
+        </button>
+        <button class="btn primary">+ 新增订阅</button>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <!-- KPI strip -->
+      <section class="kpis">
+        <div class="kpi">
+          <div class="kpi-label"><span class="dot"></span>月经常性收入 MRR</div>
+          <div class="kpi-value">¥4,286,000</div>
+          <div class="kpi-foot">
+            <span class="delta up">↗ 6.8%</span> 较上月
+          </div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label"><span class="dot"></span>年度经常性收入 ARR</div>
+          <div class="kpi-value">¥51,432,000</div>
+          <div class="kpi-foot">
+            <span class="delta up">↗ 5.2%</span> 同比增长
+          </div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label"><span class="dot"></span>付费客户数</div>
+          <div class="kpi-value">1,284<span class="unit">家</span></div>
+          <div class="kpi-foot">
+            <span class="delta up">↗ +12</span> 本月净增
+          </div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label"><span class="dot"></span>净收入留存 NRR</div>
+          <div class="kpi-value">118<span class="unit">%</span></div>
+          <div class="kpi-foot">
+            <span class="delta up">↗ +2.0pp</span> 环比提升
+          </div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label"><span class="dot"></span>客户流失率</div>
+          <div class="kpi-value">1.9<span class="unit">%</span></div>
+          <div class="kpi-foot">
+            <span class="delta good">↓ 0.3pp</span> 环比改善
+          </div>
+        </div>
+      </section>
+
+      <!-- charts grid -->
+      <div class="grid">
+
+        <!-- MRR trend -->
+        <section class="panel span-8">
+          <div class="panel-head">
+            <div>
+              <div class="panel-title">月度经常性收入</div>
+              <div class="panel-sub">过去 12 个月 · 单位：万元</div>
+            </div>
+            <div class="legend">
+              <span class="legend-item"><span class="legend-swatch" style="background:var(--accent)"></span>MRR</span>
+              <span class="legend-item"><span class="legend-swatch" style="background:var(--line-strong)"></span>目标</span>
+            </div>
+          </div>
+          <div class="chart-wrap" id="mrrChart"></div>
+        </section>
+
+        <!-- revenue mix donut -->
+        <section class="panel span-4">
+          <div class="panel-head">
+            <div>
+              <div class="panel-title">收入构成</div>
+              <div class="panel-sub">按订阅计划 · 年度 ARR</div>
+            </div>
+          </div>
+          <div class="donut-row">
+            <div class="donut-box" id="donutBox">
+              <div class="donut-center">
+                <div class="dc-val">¥51.4M</div>
+                <div class="dc-lbl">年度经常性收入</div>
+              </div>
+            </div>
+            <div class="donut-legend" id="donutLegend"></div>
+          </div>
+        </section>
+
+        <!-- new vs churn -->
+        <section class="panel span-6">
+          <div class="panel-head">
+            <div>
+              <div class="panel-title">新增 vs 流失客户</div>
+              <div class="panel-sub">近 6 个月 · 单位：家</div>
+            </div>
+            <div class="legend">
+              <span class="legend-item"><span class="legend-swatch" style="background:var(--accent)"></span>新增</span>
+              <span class="legend-item"><span class="legend-swatch" style="background:#c9beaa"></span>流失</span>
+            </div>
+          </div>
+          <div class="chart-wrap" id="barChart"></div>
+        </section>
+
+        <!-- acquisition channels -->
+        <section class="panel span-6">
+          <div class="panel-head">
+            <div>
+              <div class="panel-title">获客渠道</div>
+              <div class="panel-sub">本月新增付费客户来源</div>
+            </div>
+          </div>
+          <div class="channels" id="channels"></div>
+        </section>
+
+        <!-- renewal table -->
+        <section class="panel span-7">
+          <div class="panel-head">
+            <div>
+              <div class="panel-title">续费与到期客户</div>
+              <div class="panel-sub">未来 30 天内到期的订阅</div>
+            </div>
+            <button class="btn" style="padding:6px 12px;font-size:12px">查看全部</button>
+          </div>
+          <table class="table">
+            <thead>
+              <tr><th>客户</th><th>订阅计划</th><th class="num">MRR</th><th class="num">到期日</th><th class="num">状态</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><div class="cell-company"><span class="avatar">北</span>北辰物流</div></td>
+                <td class="cell-plan">企业版</td>
+                <td class="cell-mrr num">¥86,400</td>
+                <td class="num">12 月 28 日</td>
+                <td class="num"><span class="pill ok"><span class="p-dot"></span>已续费</span></td>
+              </tr>
+              <tr>
+                <td><div class="cell-company"><span class="avatar">青</span>青禾生物</div></td>
+                <td class="cell-plan">旗舰版</td>
+                <td class="cell-mrr num">¥124,000</td>
+                <td class="num">12 月 30 日</td>
+                <td class="num"><span class="pill warn"><span class="p-dot"></span>待跟进</span></td>
+              </tr>
+              <tr>
+                <td><div class="cell-company"><span class="avatar">蜂</span>蜂鸟出行</div></td>
+                <td class="cell-plan">专业版</td>
+                <td class="cell-mrr num">¥32,800</td>
+                <td class="num">01 月 05 日</td>
+                <td class="num"><span class="pill risk"><span class="p-dot"></span>流失风险</span></td>
+              </tr>
+              <tr>
+                <td><div class="cell-company"><span class="avatar">星</span>星轨科技</div></td>
+                <td class="cell-plan">企业版</td>
+                <td class="cell-mrr num">¥64,200</td>
+                <td class="num">01 月 08 日</td>
+                <td class="num"><span class="pill warn"><span class="p-dot"></span>待跟进</span></td>
+              </tr>
+              <tr>
+                <td><div class="cell-company"><span class="avatar">拾</span>拾光传媒</div></td>
+                <td class="cell-plan">专业版</td>
+                <td class="cell-mrr num">¥28,500</td>
+                <td class="num">01 月 12 日</td>
+                <td class="num"><span class="pill ok"><span class="p-dot"></span>已续费</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- top customers -->
+        <section class="panel span-5">
+          <div class="panel-head">
+            <div>
+              <div class="panel-title">客户 MRR 排行</div>
+              <div class="panel-sub">按月经常性收入排序</div>
+            </div>
+          </div>
+          <div class="cust-list">
+            <div class="cust-row">
+              <span class="cust-rank">1</span>
+              <span class="avatar">青</span>
+              <div><div class="cust-name">青禾生物</div><div class="cust-plan">旗舰版</div></div>
+              <div class="cust-right"><div class="cust-mrr">¥124,000</div><div class="cust-delta up">↗ 8.4%</div></div>
+            </div>
+            <div class="cust-row">
+              <span class="cust-rank">2</span>
+              <span class="avatar">北</span>
+              <div><div class="cust-name">北辰物流</div><div class="cust-plan">企业版</div></div>
+              <div class="cust-right"><div class="cust-mrr">¥86,400</div><div class="cust-delta up">↗ 3.1%</div></div>
+            </div>
+            <div class="cust-row">
+              <span class="cust-rank">3</span>
+              <span class="avatar">星</span>
+              <div><div class="cust-name">星轨科技</div><div class="cust-plan">企业版</div></div>
+              <div class="cust-right"><div class="cust-mrr">¥64,200</div><div class="cust-delta up">↗ 12.7%</div></div>
+            </div>
+            <div class="cust-row">
+              <span class="cust-rank">4</span>
+              <span class="avatar">云</span>
+              <div><div class="cust-name">云杉医疗</div><div class="cust-plan">专业版</div></div>
+              <div class="cust-right"><div class="cust-mrr">¥58,900</div><div class="cust-delta up">↗ 1.9%</div></div>
+            </div>
+            <div class="cust-row">
+              <span class="cust-rank">5</span>
+              <span class="avatar">澄</span>
+              <div><div class="cust-name">澄明数据</div><div class="cust-plan">专业版</div></div>
+              <div class="cust-right"><div class="cust-mrr">¥47,300</div><div class="cust-delta down">↘ 2.3%</div></div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var ACCENT = "#1f6b52";
+  var LINE = "#e5decf";
+  var FAINT = "#b4ac9c";
+
+  function fmt(n) {
+    return n.toLocaleString("en-US", { maximumFractionDigits: 0 });
+  }
+
+  /* ---------------- MRR line chart ---------------- */
+  var mrrMonths = ["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"];
+  var mrrValues = [310, 322, 335, 348, 341, 358, 372, 366, 385, 399, 412, 428.6];
+
+  function drawMrr() {
+    var wrap = document.getElementById("mrrChart");
+    var w = wrap.clientWidth;
+    var h = 268;
+    var padL = 44, padR = 16, padT = 18, padB = 30;
+    var x0 = padL, x1 = w - padR, y0 = padT, y1 = h - padB;
+    var ymin = 280, ymax = 450;
+    var n = mrrValues.length;
+
+    function sx(i) { return x0 + (i / (n - 1)) * (x1 - x0); }
+    function sy(v) { return y1 - ((v - ymin) / (ymax - ymin)) * (y1 - y0); }
+
+    var ticks = [300, 350, 400, 450];
+    var grid = ticks.map(function (t) {
+      var y = sy(t);
+      return '<line class="grid-line" x1="' + x0 + '" y1="' + y + '" x2="' + x1 + '" y2="' + y + '"/>'
+           + '<text class="axis-text" x="' + (x0 - 10) + '" y="' + (y + 3.5) + '" text-anchor="end">' + t + '</text>';
+    }).join("");
+
+    var linePath = mrrValues.map(function (v, i) {
+      return (i === 0 ? "M" : "L") + sx(i).toFixed(1) + " " + sy(v).toFixed(1);
+    }).join(" ");
+
+    var areaPath = linePath + " L" + sx(n - 1).toFixed(1) + " " + y1 + " L" + sx(0).toFixed(1) + " " + y1 + " Z";
+
+    // x labels (every other month)
+    var xLabels = mrrMonths.map(function (m, i) {
+      if (i % 2 !== 0 && i !== n - 1) return "";
+      return '<text class="axis-text" x="' + sx(i).toFixed(1) + '" y="' + (h - 8) + '" text-anchor="middle">' + m + '</text>';
+    }).join("");
+
+    var dots = mrrValues.map(function (v, i) {
+      return '<circle class="mrr-dot" data-i="' + i + '" cx="' + sx(i).toFixed(1) + '" cy="' + sy(v).toFixed(1) + '" r="3.2" fill="' + ACCENT + '" stroke="#fcfaf5" stroke-width="1.6"/>';
+    }).join("");
+
+    var svg = '<svg width="' + w + '" height="' + h + '">'
+      + '<defs>'
+      + '<linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">'
+      + '<stop offset="0%" stop-color="' + ACCENT + '" stop-opacity="0.16"/>'
+      + '<stop offset="100%" stop-color="' + ACCENT + '" stop-opacity="0"/>'
+      + '</linearGradient>'
+      + '</defs>'
+      + grid
+      + '<path d="' + areaPath + '" fill="url(#areaGrad)"/>'
+      + '<path d="' + linePath + '" fill="none" stroke="' + ACCENT + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'
+      + dots
+      + xLabels
+      + '<line class="hover-line" x1="0" y1="' + y0 + '" x2="0" y2="' + y1 + '" stroke="#b4ac9c" stroke-width="1" stroke-dasharray="3 3" opacity="0"/>'
+      + '<circle class="hover-dot" cx="0" cy="0" r="5" fill="none" stroke="' + ACCENT + '" stroke-width="2" opacity="0"/>'
+      + '<rect class="hover-zone" x="' + x0 + '" y="' + y0 + '" width="' + (x1 - x0) + '" height="' + (y1 - y0) + '" fill="transparent"/>'
+      + '</svg>';
+
+    wrap.innerHTML = svg + '<div class="chart-tip" id="mrrTip"><div class="t-val"></div><div class="t-lbl"></div></div>';
+
+    var tip = document.getElementById("mrrTip");
+    var hLine = wrap.querySelector(".hover-line");
+    var hDot = wrap.querySelector(".hover-dot");
+    var zone = wrap.querySelector(".hover-zone");
+
+    function show(i) {
+      var v = mrrValues[i];
+      var cx = sx(i), cy = sy(v);
+      hLine.setAttribute("x1", cx); hLine.setAttribute("x2", cx);
+      hLine.setAttribute("opacity", "1");
+      hDot.setAttribute("cx", cx); hDot.setAttribute("cy", cy);
+      hDot.setAttribute("opacity", "1");
+      tip.querySelector(".t-val").textContent = "¥" + v + " 万";
+      tip.querySelector(".t-lbl").textContent = mrrMonths[i] + " · 较上月 " + (i === 0 ? "—" : (mrrValues[i] > mrrValues[i-1] ? "+" : "") + (mrrValues[i] - mrrValues[i-1]).toFixed(1) + " 万");
+      var tipX = Math.max(70, Math.min(w - 70, cx));
+      tip.style.left = tipX + "px";
+      tip.style.top = cy + "px";
+      tip.classList.add("show");
+    }
+    function hide() {
+      hLine.setAttribute("opacity", "0");
+      hDot.setAttribute("opacity", "0");
+      tip.classList.remove("show");
+    }
+
+    zone.addEventListener("mousemove", function (e) {
+      var rect = wrap.getBoundingClientRect();
+      var mx = e.clientX - rect.left;
+      var i = Math.round((mx - x0) / ((x1 - x0) / (n - 1)));
+      i = Math.max(0, Math.min(n - 1, i));
+      show(i);
+    });
+    zone.addEventListener("mouseleave", hide);
+  }
+
+  /* ---------------- donut ---------------- */
+  var mixData = [
+    { name: "专业版", value: 38, color: "#1f6b52" },
+    { name: "企业版", value: 34, color: "#4f8e74" },
+    { name: "旗舰版", value: 21, color: "#9bb8a6" },
+    { name: "其他",   value: 7,  color: "#e0d9c9" }
+  ];
+
+  function drawDonut() {
+    var box = document.getElementById("donutBox");
+    var R = 62, SW = 16, C = 2 * Math.PI * R;
+    var total = mixData.reduce(function (s, d) { return s + d.value; }, 0);
+    var gap = 0.02;
+    var acc = 0;
+    var segs = mixData.map(function (d) {
+      var frac = d.value / total;
+      var dash = Math.max(0.5, (frac - gap) * C);
+      var el = '<circle cx="88" cy="88" r="' + R + '" fill="none" stroke="' + d.color + '" stroke-width="' + SW + '"'
+        + ' stroke-dasharray="' + dash.toFixed(1) + ' ' + (C - dash).toFixed(1) + '"'
+        + ' stroke-dashoffset="' + (-acc * C - gap * C / 2).toFixed(1) + '"'
+        + ' stroke-linecap="round"/>';
+      acc += frac;
+      return el;
+    }).join("");
+
+    box.insertAdjacentHTML("afterbegin",
+      '<svg width="176" height="176" viewBox="0 0 176 176" style="position:absolute;inset:0;transform:rotate(-90deg)">'
+      + segs + '</svg>');
+
+    var legend = document.getElementById("donutLegend");
+    legend.innerHTML = mixData.map(function (d) {
+      return '<div class="dl-item">'
+        + '<span class="dl-dot" style="background:' + d.color + '"></span>'
+        + '<span class="dl-name">' + d.name + '</span>'
+        + '<span class="dl-pct">' + d.value + '%</span>'
+        + '<span class="dl-val">¥' + (51.4 * d.value / 100).toFixed(1) + 'M</span>'
+        + '</div>';
+    }).join("");
+  }
+
+  /* ---------------- grouped bars ---------------- */
+  var barMonths = ["7月","8月","9月","10月","11月","12月"];
+  var barNew = [38, 44, 41, 52, 49, 57];
+  var barChurn = [12, 15, 11, 14, 13, 16];
+
+  function drawBars() {
+    var wrap = document.getElementById("barChart");
+    var w = wrap.clientWidth;
+    var h = 240;
+    var padL = 12, padR = 12, padT = 16, padB = 28;
+    var x0 = padL, x1 = w - padR, y0 = padT, y1 = h - padB;
+    var ymax = 60, ymin = 0;
+    var n = barMonths.length;
+    var slot = (x1 - x0) / n;
+    var bw = Math.min(16, slot * 0.28);
+
+    function sy(v) { return y1 - ((v - ymin) / (ymax - ymin)) * (y1 - y0); }
+
+    var grid = [0, 20, 40, 60].map(function (t) {
+      var y = sy(t);
+      return '<line class="grid-line" x1="' + x0 + '" y1="' + y + '" x2="' + x1 + '" y2="' + y + '"/>'
+           + '<text class="axis-text" x="' + (x0 - 4) + '" y="' + (y + 3.5) + '" text-anchor="end">' + t + '</text>';
+    }).join("");
+
+    var bars = "";
+    for (var i = 0; i < n; i++) {
+      var cx = x0 + slot * i + slot / 2;
+      var nx = cx - bw - 2;
+      var lx = cx + 2;
+      bars += '<rect x="' + (nx - bw / 2) + '" y="' + sy(barNew[i]) + '" width="' + bw + '" height="' + (y1 - sy(barNew[i])) + '" rx="3" fill="' + ACCENT + '"/>';
+      bars += '<rect x="' + (lx - bw / 2) + '" y="' + sy(barChurn[i]) + '" width="' + bw + '" height="' + (y1 - sy(barChurn[i])) + '" rx="3" fill="#c9beaa"/>';
+      bars += '<text class="axis-text" x="' + cx + '" y="' + (h - 8) + '" text-anchor="middle">' + barMonths[i] + '</text>';
+    }
+
+    wrap.innerHTML = '<svg width="' + w + '" height="' + h + '">' + grid + bars + '</svg>';
+  }
+
+  /* ---------------- channels ---------------- */
+  var channels = [
+    { name: "自然搜索", pct: 34 },
+    { name: "内容营销", pct: 27 },
+    { name: "合作伙伴", pct: 18 },
+    { name: "付费投放", pct: 12 },
+    { name: "其他渠道", pct: 9 }
+  ];
+
+  function drawChannels() {
+    var el = document.getElementById("channels");
+    el.innerHTML = channels.map(function (c) {
+      return '<div class="channel-row">'
+        + '<span class="channel-name">' + c.name + '</span>'
+        + '<div class="channel-track"><div class="channel-fill" data-w="' + (c.pct * 2.6) + '%"></div></div>'
+        + '<span class="channel-pct">' + c.pct + '%</span>'
+        + '</div>';
+    }).join("");
+    // animate widths after a tick
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        el.querySelectorAll(".channel-fill").forEach(function (f) {
+          f.style.width = f.getAttribute("data-w");
+        });
+      });
+    });
+  }
+
+  /* ---------------- render & resize ---------------- */
+  function render() {
+    drawMrr();
+    drawBars();
+  }
+
+  var resizeTimer;
+  window.addEventListener("resize", function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(render, 160);
+  });
+
+  drawDonut();
+  drawChannels();
+  render();
+})();
+</script>
+</body>
+</html>
